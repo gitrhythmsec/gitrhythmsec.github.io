@@ -155,6 +155,7 @@ a.contact-card:focus-visible {
     color: #5b6472;
 }
 
+/* Shared listing styles for Projects, Papers, and Articles. */
 .project-grid,
 .paper-grid {
     display: grid;
@@ -261,6 +262,31 @@ a.contact-card:focus-visible {
 
 .project-card__footer {
     margin-top: auto;
+}
+
+.article-page {
+    max-width: 70ch;
+    margin-inline: auto;
+    color: #182230;
+    overflow-wrap: break-word;
+}
+
+.article-header {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e1e5eb;
+}
+
+.article-header h1 {
+    margin: 8px 0 16px;
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    line-height: 1.2;
+}
+
+.article-page article > p {
+    margin: 0 0 1.5em;
+    font-size: 1.0625rem;
+    line-height: 1.8;
 }
 
 @media (max-width: 600px) {
