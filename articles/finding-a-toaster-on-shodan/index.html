@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Finding a Toaster on Shodan - Articles - Colton Hooks</title>
+    <meta name="author" content="Colton Hooks">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <nav aria-label="Main navigation">
+        <details class="mobile-nav">
+            <summary><span aria-hidden="true">☰</span> Menu</summary>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/projects/">Projects</a>
+                <a href="/articles/">Articles</a>
+                <a href="/papers/">Papers</a>
+                <a href="/contact/">Contact</a>
+            </div>
+        </details>
+        <div class="desktop-nav nav-links">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/projects/">Projects</a>
+            <a href="/articles/">Articles</a>
+            <a href="/papers/">Papers</a>
+            <a href="/contact/">Contact</a>
+        </div>
+    </nav>
+
+    <main class="article-page">
+        <p><a href="/articles/">Back to Articles</a></p>
+        <article>
+            <header class="article-header">
+                <p class="paper-card__category">Security / Internet Research</p>
+                <h1>Finding a Toaster on Shodan</h1>
+                <p class="paper-card__meta">
+                    <span>By Colton Hooks</span>
+                    <time datetime="2026-10-01">October 1, 2026</time>
+                </p>
+            </header>
+
+            <p>I was looking through devices on Shodan, just wasting some time, and I found a honeypot server with lots of metadata. It had hundreds of different vulnerable software names, devices, and more, likely intended to attract bots. I put the data into ChatGPT which confirmed that it was most likely a honeypot for bots to recognize vulnerable programs and attempt automated attacks. In that message, ChatGPT said, “So I wouldn't interpret this as <strong>"holy shit, this person accidentally published all their credentials."</strong> I'd interpret it more like: <strong>"Congratulations, scanner. You found everything. Every vulnerability. Every router. Every NAS. Root access. VMware. WordPress. A DVR. Probably a toaster if you keep scrolling."</strong> (Yes, it really said that lol). I have been seeing the memes of IoT toasters for years, and that got me thinking, are there toasters on Shodan? Could I find one?</p>
+
+            <p>Before I begin, two quick terms. First is Shodan. Shodan is a great tool used to find devices and services that are exposed to the internet. It is essentially Google, but instead of mainly searching websites, it searches IP addresses and collects information about open ports and the services running on them. Second is IoT. If you are not familiar, IoT stands for Internet of Things, which is essentially all of those little devices in your home that connect to the internet for one reason or another. Some examples include toasters, fridges, thermostats, light bulbs, and, in fancier cases, pool thermometers, toothbrushes, and toilets. Yes, I had to look that last one up too.</p>
+
+            <p>Starting with a simple search, “toaster”, I quickly realized this approach wasn’t going to work. Every result returned email toasters, which are services that apparently “warm-up” email domains by using a network of real email accounts to generate positive interactions, which can generate, maintain, or fix a sender’s reputation. This was the first I’d ever heard of the service, but I’m not surprised that it exists. Next, I tried a simple search that might block out email toasters, “smart toaster”. This returned three results: A Minecraft server and two “Zojirushi Smart Toasters”. The Zojirushis were both last seen nine and thirteen days ago, with 404 and 502 errors respectively. After looking it up, Zojirushi is a real company that makes kitchen appliances, but that was sadly just the HTTP header. The real services underneath were Dovecot and Postfix mail services. The more interesting candidate, the Minecraft server, was running Purpur 26.2 and had “Description: hosted on a samsung smart toaster” in the listing. This was interesting, but the server was last seen six days earlier. Like with the other servers, I don’t fully trust that description, plus the alleged toaster was also running Plex, so I think I can do better.</p>
+
+            <p>This also taught me pretty quickly not to blindly trust service banners. Shodan reports what a service identifies itself as, but an administrator can configure an HTTP header, hostname, or page title to say anything they find funny. Several promising “smart appliance” results turned out to be ordinary servers with joke names or deliberately misleading banners.</p>
+
+            <p>Going in, I knew the meme nature of “toasters” on the internet, and I am now seeing how that is adding to the challenge of finding a legitimate toaster. Many results popped up, including a NAS box named toaster, Emby media servers, Mosquitto measuring the power consumption of a device named toaster, and a DD-WRT router that exposed a DHCP lease named “Toaster” along with other appliances. Revolution Cooking is a brand of toasters that connects to the internet to get time, date, weather info, and updates. Searches like “R180” bring up hundreds of unrelated services, “Revolution”, “R180 Connect”, and “R180C-01” return nothing. “Toaster””UPnP” or “toaster””DHCP” are great ways to find devices that are just named Toaster as a joke. Haier makes a number of IoT home appliances that might appear next. Starting with “Haier” as the search, many results appear. Personal websites, the company’s official servers, links to hospitals, Docker Registries, and the list goes on. Finding toasters on the internet may not be impossible, but it is quite difficult to do.</p>
+
+            <p>To get on the scoreboard, I widened the search a little bit. The Smarter iKettle or Smarter Coffee are very well established and documented devices that connect to the internet. So well documented, in fact, that HoneyDB has an iKettle 2.0 honeypot plugin. Despite being well known, and having established honeypots, none of these devices could be found. Next, I looked at Wemo Crock-Pot Smart Slow Cookers, Mr. Coffee with Wemo, Anova Precision Ovens, Breville Air Fryers, Suvie cooking robots, Tovala smart ovens, and more. The one bit of experience gained, aside from a full Black Friday wishlist, is immediately recognizing services based on their banners. Whether it is Docker Registries, MQTT connection info, Debian, Prometheus, or DD-WRT routers, seeing these results repeatedly made it much faster to recognize what service was running, what I could expect on that port, and whether the result was worth investigating.</p>
+
+            <p>Interestingly, some of the closest results did not come from appliances themselves, but from the infrastructure around them. MQTT brokers, Home Assistant discovery topics, and router DHCP tables sometimes exposed device names like “toaster,” “fridge,” or “air fryer,” even when the actual appliance was hidden behind a home network. In practice, this meant that finding the systems managing IoT devices was often more useful than finding the devices themselves.</p>
+
+            <p>One reason these devices are probably so difficult to find is NAT, or Network Address Translation. Most home routers use one public IP address for all of the devices inside the house, while the toaster, fridge, or whatever else sits on a private IP that is not directly reachable from the internet. Those devices usually make outbound connections to cloud services instead of listening for connections themselves, so unless someone forwards a port or another exposed service leaks information about them, Shodan may never see the appliance at all. After at least a full day of looking for names, MAC addresses, or anything that ties to smart appliances, I have not been able to find anything that might be an IoT device in somebody’s kitchen. I am now far more familiar with Shodan searches, evaluating services on ports, reading banners, and using ChatGPT to read FCC docs. This little project has been fun, but I need to find more productive use of my time. Thank you for reading!</p>
+        </article>
+    </main>
+
+</body>
+
+</html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -17,6 +17,7 @@
                 <a href="/">Home</a>
                 <a href="/about/">About</a>
                 <a href="/projects/">Projects</a>
+                <a href="/articles/">Articles</a>
                 <a href="/papers/">Papers</a>
                 <a href="/contact/">Contact</a>
             </div>
@@ -25,15 +26,29 @@
             <a href="/">Home</a>
             <a href="/about/">About</a>
             <a href="/projects/">Projects</a>
+            <a href="/articles/">Articles</a>
             <a href="/papers/">Papers</a>
             <a href="/contact/">Contact</a>
         </div>
     </nav>
 
     <main>
-        <section aria-labelledby="coming-soon-heading">
-            <h1 id="coming-soon-heading">Hey, you found me!</h1>
-            <p>I'm not quite ready yet, but come back soon and I might be.</p>
+        <header>
+            <h1>Articles</h1>
+        </header>
+
+        <section aria-label="Articles">
+            <div class="paper-grid">
+                <a class="paper-card" href="/articles/finding-a-toaster-on-shodan/">
+                    <p class="paper-card__category">Security / Internet Research</p>
+                    <h2 class="paper-card__title">Finding a Toaster on Shodan</h2>
+                    <p class="paper-card__meta">
+                        <time datetime="2026-10-01">October 1, 2026</time>
+                    </p>
+                    <p class="paper-card__summary">A slightly ridiculous search for internet-connected kitchen appliances that turned into a practical lesson in Shodan, service banners, IoT infrastructure, MQTT, and NAT.</p>
+                    <span class="paper-card__action">Read article <span aria-hidden="true">→</span></span>
+                </a>
+            </div>
         </section>
     </main>
 
