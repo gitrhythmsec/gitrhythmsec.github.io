@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Building This Website - Projects - Colton H.</title>
+    <meta name="author" content="Colton H.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <nav aria-label="Main navigation">
+        <details class="mobile-nav">
+            <summary><span aria-hidden="true">☰</span> Menu</summary>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/projects/">Projects</a>
+                <a href="/articles/">Articles</a>
+                <a href="/papers/">Papers</a>
+                <a href="/contact/">Contact</a>
+            </div>
+        </details>
+        <div class="desktop-nav nav-links">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/projects/">Projects</a>
+            <a href="/articles/">Articles</a>
+            <a href="/papers/">Papers</a>
+            <a href="/contact/">Contact</a>
+        </div>
+    </nav>
+    <main class="article-page">
+        <p><a href="/projects/">Back to Projects</a></p>
+        <article>
+            <header class="article-header">
+                <p class="paper-card__category">Web / Git / GitHub Pages</p>
+                <h1>Building This Website</h1>
+                <p class="paper-card__meta"><span>By Colton H.</span><span>Status: Active</span></p>
+            </header>
+
+            <section aria-labelledby="overview-heading">
+                <h2 id="overview-heading">Overview</h2>
+                <p>This website is both a place to share my work and a project of its own. I'm using it to learn Git, GitHub workflows, responsive web design, and GitHub Pages while documenting technical projects, research, experiments, and things I learn.</p>
+                <p>This is an active project. The site and this write-up will continue to evolve as I add content and work on the design.</p>
+            </section>
+
+            <section aria-labelledby="why-heading">
+                <h2 id="why-heading">Why I Built It</h2>
+                <p>I wanted a place to collect my research and show what I'm learning. Projects, articles, and papers give different kinds of work a home, from a practical Proxmox backup guide to a search for an internet-connected toaster.</p>
+            </section>
+
+            <section aria-labelledby="architecture-heading">
+                <h2 id="architecture-heading">Current Architecture</h2>
+                <p>The site uses static HTML pages and one shared stylesheet, with no JavaScript or external libraries. Each section has its own directory and index.html file. Individual articles, papers, and project write-ups live in subdirectories, and the Proxmox paper includes a downloadable PDF.</p>
+                <p>The navigation is repeated in each HTML page. Desktop links and a mobile menu built with the HTML details and summary elements provide access to the same six sections. CSS controls which menu is shown and adapts the card layouts to the available space.</p>
+            </section>
+
+            <section aria-labelledby="workflow-heading">
+                <h2 id="workflow-heading">Development Workflow</h2>
+                <p>Work starts by inspecting the existing pages and styles, then making changes within a specific scope. Recent updates have included restoring Articles, publishing the first article, aligning the index pages, and refreshing the homepage.</p>
+                <p>I manually review and manage the Git workflow. Checks during these updates include reviewing diffs, checking local links and navigation, running git diff --check, and inspecting git status before staging or committing anything.</p>
+            </section>
+
+            <section aria-labelledby="ai-heading">
+                <h2 id="ai-heading">AI-Assisted Development</h2>
+                <p>I'm experimenting with AI-assisted development as part of building the site. I use it to help implement scoped changes to HTML and CSS, then review the results and request adjustments to wording, structure, and presentation.</p>
+                <p>For the first article, the task was to turn my supplied text into HTML while preserving the wording and bold passages. For the homepage, the task was to feature real work already on the site and reuse the existing design.</p>
+            </section>
+
+            <section aria-labelledby="design-heading">
+                <h2 id="design-heading">Design Decisions</h2>
+                <p>The homepage is a short introduction with links to one article, one paper, and one project. The section indexes follow a simple pattern: a title, a short introduction, and cards. Shared borders, colors, spacing, and typography keep those pages consistent.</p>
+                <p>Long-form pages use a narrower reading area instead of placing the whole write-up inside a card. The site stays lightweight, and the mobile navigation works without JavaScript.</p>
+            </section>
+
+            <section aria-labelledby="learning-heading">
+                <h2 id="learning-heading">What I've Learned</h2>
+                <p>Working on the site has made consistency a practical concern. With navigation copied into each page, adding a section means checking every menu. Reusing shared styles makes it easier to keep the index pages aligned without duplicating CSS.</p>
+                <p>It has also been an exercise in reviewing the details: making sure cards point to the right pages, removing placeholders when real content is ready, preserving article text, and keeping changes focused on the task.</p>
+            </section>
+
+            <section aria-labelledby="next-heading">
+                <h2 id="next-heading">Current State / Next Steps</h2>
+                <p>The site currently has Home, About, Projects, Articles, Papers, and Contact sections. The homepage features the Shodan article, the Proxmox paper, and this project. The Projects page also records the Arduino Network Scanner experiment.</p>
+                <p>The ongoing work is to add more documentation and refine the site as it grows. The Arduino project still has a write-up to come, and this page will be updated as the website develops.</p>
+            </section>
+        </article>
+    </main>
+</body>
+</html>
