@@ -293,6 +293,55 @@ a.contact-card:focus-visible {
     color: #182230;
 }
 
+/* Reusable technical content for long-form pages. */
+main pre {
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 16px;
+    border: 1px solid #e1e5eb;
+    border-radius: 8px;
+    background: #f3f5f8;
+    color: #182230;
+    white-space: pre;
+    overflow-wrap: normal;
+    word-break: normal;
+    line-height: 1.6;
+}
+
+main pre code {
+    font-family: ui-monospace, monospace;
+    font-size: 0.9rem;
+}
+
+.table-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+    margin-block: 20px;
+}
+
+.table-scroll table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table-scroll th,
+.table-scroll td {
+    padding: 10px 16px;
+    border: 1px solid #e1e5eb;
+}
+
+.table-scroll th {
+    background: #f3f5f8;
+}
+
+main pre:focus-visible,
+.table-scroll:focus-visible {
+    outline: 3px solid #94a3b8;
+    outline-offset: 3px;
+}
+
 .home-hero {
     max-width: 65ch;
     padding-block: 12px;

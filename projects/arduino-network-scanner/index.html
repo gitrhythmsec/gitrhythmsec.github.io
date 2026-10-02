@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Building a Network Scanner with an Arduino Uno - Projects - Colton H.</title>
+    <meta name="author" content="Colton H.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <nav aria-label="Main navigation">
+        <details class="mobile-nav">
+            <summary><span aria-hidden="true">☰</span> Menu</summary>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/projects/">Projects</a>
+                <a href="/articles/">Articles</a>
+                <a href="/papers/">Papers</a>
+                <a href="/contact/">Contact</a>
+            </div>
+        </details>
+        <div class="desktop-nav nav-links">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/projects/">Projects</a>
+            <a href="/articles/">Articles</a>
+            <a href="/papers/">Papers</a>
+            <a href="/contact/">Contact</a>
+        </div>
+    </nav>
+    <main class="article-page">
+        <p><a href="/projects/">Back to Projects</a></p>
+        <article>
+            <header class="article-header">
+                <p class="paper-card__category">Hardware / Networking</p>
+                <h1>Building a Network Scanner with an Arduino Uno</h1>
+                <p class="paper-card__meta"><span>By Colton H.</span><span>Status: Completed</span></p>
+                <p>The hardware has since been disassembled; this write-up documents the completed experiment.</p>
+            </header>
+
+                <p>I originally started this project as a way to learn some basic electronics with an Arduino Uno and a 16×2 LCD screen. I occasionally want to find devices on my home network, and I had an Arduino Ethernet Shield 2 on my desk, that I didn’t know what to do with. That led to a simple question: could I use an Arduino to connect to a network and display the IP addresses of devices that are alive?</p>
+                <p>As it turns out, the answer is yes — although the project also demonstrated why an Arduino Uno is not exactly an ideal network scanner.</p>
+            <section aria-labelledby="hardware">
+                <h2 id="hardware">Hardware</h2>
+                <p>The project used three main components:</p>
+                <ul>
+                    <li>Arduino Uno</li>
+                    <li>Arduino Ethernet Shield 2</li>
+                    <li>16×2 LCD with an I²C backpack</li>
+                </ul>
+                <p>The LCD was connected using I²C:</p>
+                <div class="table-scroll" role="region" aria-label="LCD wiring" tabindex="0">
+                    <table>
+                        <thead><tr><th scope="col">Arduino Uno</th><th scope="col">LCD</th></tr></thead>
+                        <tbody>
+                            <tr><td>5V</td><td>VCC</td></tr>
+                            <tr><td>GND</td><td>GND</td></tr>
+                            <tr><td>A4</td><td>SDA</td></tr>
+                            <tr><td>A5</td><td>SCL</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>The I²C address of the display was 0x27.</p>
+                <p>One useful feature of the Ethernet Shield 2 is that its headers pass the Arduino's pins through the shield. This allowed the shield to be mounted directly on top of the Uno while the LCD remained connected through A4 and A5.</p>
+                <p>The LCD uses I²C, while the Ethernet Shield communicates with the Uno through SPI, so the two devices can coexist without interfering with each other.</p>
+                <p>The Ethernet Shield 2 contains a W5500 Ethernet controller. On the Arduino Uno, the shield uses the SPI interface along with digital pin 10 as its chip-select pin.</p>
+            </section>
+            <section aria-labelledby="establishing-network-connectivity">
+                <h2 id="establishing-network-connectivity">Establishing Network Connectivity</h2>
+                <p>The first goal was simply to verify that the Arduino could communicate with the network while the LCD was connected.</p>
+                <p>Using the Arduino Ethernet library, the Arduino requested an address from the network's DHCP server. Once DHCP completed, the assigned IP address was displayed on both the LCD and Serial Monitor.</p>
+                <p>An early successful test displayed an address similar to:</p>
+                <pre tabindex="0"><code>Ethernet OK!
+192.168.8.232</code></pre>
+                <p>Later DHCP requests assigned a different address, such as:</p>
+                <pre tabindex="0"><code>192.168.8.205</code></pre>
+                <p>This was expected because the Arduino was using DHCP rather than a static address. The successful DHCP test confirmed that the LCD, Uno, Ethernet Shield, SPI interface, and network connection were all functioning at the same time.</p>
+            </section>
+            <section aria-labelledby="deciding-how-to-discover-hosts">
+                <h2 id="deciding-how-to-discover-hosts">Deciding How to Discover Hosts</h2>
+                <p>There are several ways to determine whether another device exists on a local network. Two particularly interesting options were ARP and ICMP.</p>
+                <p>ARP is used on a local IPv4 network to determine which MAC address corresponds to an IP address. This makes ARP particularly useful for finding devices on the same local network, including some hosts that may refuse to respond to ICMP.</p>
+                <p>ICMP is the protocol used by traditional ping commands. A scanner can send an ICMP Echo Request to an address and mark the address as alive if an Echo Reply is received.</p>
+                <p>For this experiment, I decided to begin with ICMP because there was already an Arduino library capable of generating ICMP Echo Requests through the W5500.</p>
+            </section>
+            <section aria-labelledby="software-and-library-problems">
+                <h2 id="software-and-library-problems">Software and Library Problems</h2>
+                <p>This turned out to be one of the more interesting parts of the project.</p>
+                <p>My original Ethernet test used version 2.0.2 of the standard Arduino Ethernet library:</p>
+                <pre tabindex="0"><code>#include &lt;Ethernet.h&gt;</code></pre>
+                <p>However, the W5500 ICMP library I found was written for another library named Ethernet2:</p>
+                <pre tabindex="0"><code>#include &lt;Ethernet2.h&gt;
+#include &lt;ICMPPing.h&gt;</code></pre>
+                <p>Initially, I attempted to use the standard Ethernet library along with ICMPPing.</p>
+                <p>That produced a long list of compiler errors such as:</p>
+                <pre tabindex="0"><code>redefinition of 'class EthernetClient'
+redefinition of 'class EthernetServer'
+redefinition of 'class EthernetUDP'
+redefinition of 'class DhcpClass'
+redefinition of 'class EthernetClass'</code></pre>
+                <p>The cause became clear after looking at the include chain.</p>
+                <p>My sketch was loading:</p>
+                <pre tabindex="0"><code>Ethernet.h</code></pre>
+                <p>while ICMPPing.h was internally loading:</p>
+                <pre tabindex="0"><code>Ethernet2.h</code></pre>
+                <p>Both libraries defined classes with names such as EthernetClient, EthernetServer, and EthernetUDP. The compiler therefore encountered two completely different definitions for the same classes.</p>
+                <p>The solution was to use the Ethernet2 library expected by the ICMP library rather than loading both Ethernet implementations simultaneously.</p>
+            </section>
+            <section aria-labelledby="the-chip-select-problem">
+                <h2 id="the-chip-select-problem">The Chip-Select Problem</h2>
+                <p>After fixing the library conflict, the example ICMP program still did not initially obtain an address through DHCP.</p>
+                <p>The example code contained:</p>
+                <pre tabindex="0"><code>#define ETH_CS_PIN 8
+#define ETH_RST_PIN 7</code></pre>
+                <p>and its documentation stated:</p>
+                <pre tabindex="0"><code>Ethernet CS pin to pin 8
+Ethernet reset pin to pin 7</code></pre>
+                <p>That configuration was intended for the hardware used by the library author and did not match my Arduino Ethernet Shield 2.</p>
+                <p>The Ethernet Shield 2 uses digital pin 10 as the W5500 chip-select pin.</p>
+                <p>Changing:</p>
+                <pre tabindex="0"><code>#define ETH_CS_PIN 8</code></pre>
+                <p>to:</p>
+                <pre tabindex="0"><code>#define ETH_CS_PIN 10</code></pre>
+                <p>immediately solved the problem.</p>
+                <p>The Arduino successfully obtained a DHCP address and began sending ICMP Echo Requests. This was a useful lesson that even when two pieces of hardware use the same controller, example code may not work with how that controller is physically connected.</p>
+            </section>
+            <section aria-labelledby="successfully-pinging-a-device">
+                <h2 id="successfully-pinging-a-device">Successfully Pinging a Device</h2>
+                <p>The first target was my gateway:</p>
+                <pre tabindex="0"><code>192.168.8.1</code></pre>
+                <p>The Arduino successfully received the ICMP replies.</p>
+                <p>Once a single host could be pinged, I modified the program to loop through a small range of addresses.</p>
+                <p>For example:</p>
+                <pre tabindex="0"><code>192.168.8.150
+through
+192.168.8.160</code></pre>
+                <p>My phone happened to be using:</p>
+                <pre tabindex="0"><code>192.168.8.156</code></pre>
+                <p>The resulting output looked like:</p>
+                <pre tabindex="0"><code>Pinging 192.168.8.155 ... no response
+Pinging 192.168.8.156 ... ALIVE! 129 ms
+Pinging 192.168.8.157 ... no response</code></pre>
+                <p>Repeated scans showed the phone responding in approximately 129–130 ms, although one response took approximately 220 ms. At this point, the Arduino was functioning as a legitimate ICMP network scanner!</p>
+            </section>
+            <section aria-labelledby="automatically-discovering-the-network">
+                <h2 id="automatically-discovering-the-network">Automatically Discovering the Network</h2>
+                <p>The next step was removing the hard-coded network address, and setting network information automatically. DHCP provides more than just the IP address. It also provides information such as the subnet mask and default gateway.</p>
+                <p>The scanner retrieved:</p>
+                <pre tabindex="0"><code>Arduino IP: 192.168.8.205
+Subnet mask: 255.255.255.0
+Gateway: 192.168.8.1</code></pre>
+                <p>The program then calculated the network address by performing a bitwise AND between the IP address and subnet mask.</p>
+                <p>In this case:</p>
+                <pre tabindex="0"><code>IP:       192.168.8.205
+Mask:     255.255.255.0
+                     ↓
+Network:  192.168.8.0</code></pre>
+                <p>It also calculated the broadcast address:</p>
+                <pre tabindex="0"><code>Broadcast: 192.168.8.255</code></pre>
+                <p>Because this was a /24 network, the Arduino could then scan the usable host addresses:</p>
+                <pre tabindex="0"><code>192.168.8.1
+192.168.8.2
+192.168.8.3
+...
+192.168.8.254</code></pre>
+                <p>The program skipped its own DHCP address rather than trying to ping itself, in an attempt to save time.</p>
+            </section>
+            <section aria-labelledby="the-full-network-scan">
+                <h2 id="the-full-network-scan">The Full Network Scan</h2>
+                <p>The final experiment was scanning the entire /24.</p>
+                <p>The scanner began with:</p>
+                <pre tabindex="0"><code>Network: 192.168.8.0
+Broadcast: 192.168.8.255</code></pre>
+                <p>It eventually found three devices responding to ICMP:</p>
+                <pre tabindex="0"><code>192.168.8.1   ALIVE   1 ms
+192.168.8.172 ALIVE   3 ms
+192.168.8.231 ALIVE   3 ms</code></pre>
+                <p>The Arduino itself occupied:</p>
+                <pre tabindex="0"><code>192.168.8.205</code></pre>
+                <p>and was skipped.</p>
+                <p>Interestingly, the phone at 192.168.8.156, which had responded consistently during the earlier targeted scan, did not respond during the full scan.</p>
+                <p>This demonstrated an important limitation of ping-based discovery:</p>
+                <p>No ICMP response does not necessarily mean that no device exists at that address.</p>
+                <p>Devices can ignore ICMP, filter it with a firewall, enter power-saving states, or otherwise fail to respond even though they are connected to the network.</p>
+                <p>An ARP-based scanner would potentially detect some of these devices because ARP operates at a lower layer and is necessary for normal IPv4 communication on the local network.</p>
+            </section>
+            <section aria-labelledby="the-arduino-s-biggest-limitation-speed">
+                <h2 id="the-arduino-s-biggest-limitation-speed">The Arduino's Biggest Limitation: Speed</h2>
+                <p>The full scan revealed the biggest problem with using an Arduino Uno as a network scanner. It took approximately 27 minutes. The problem was not Ethernet bandwidth, but it was in how the scan was done. The Arduino was performing the scan sequentially:</p>
+                <pre tabindex="0"><code>Ping .1
+wait for response or timeout
+
+Ping .2
+wait for response or timeout
+
+Ping .3
+wait for response or timeout
+
+...
+
+Ping .254
+wait for response or timeout</code></pre>
+                <p>Responsive devices were fast. The gateway answered in approximately 1 ms, while other wired or active devices responded in around 3 ms.</p>
+                <p>Addresses with no hosts were the problem. For every address that did not respond, the Arduino had to wait for the ICMP operation to time out before retrying three times, then proceeding to the next IP address.</p>
+                <p>Because almost all 254 possible addresses were unused, most of the 27-minute scan consisted of the Arduino waiting for nonexistent hosts.</p>
+                <p>A desktop operating system or Linux device can perform this job very differently. Tools such as Nmap can have many probes outstanding simultaneously rather than waiting for each individual address before beginning the next one.</p>
+                <p>Conceptually, the Arduino was doing:</p>
+                <pre tabindex="0"><code>Host 1  -&gt; wait -&gt; Host 2 -&gt; wait -&gt; Host 3 -&gt; wait</code></pre>
+                <p>while a more capable system can behave more like:</p>
+                <pre tabindex="0"><code>       -&gt; Host 1
+       -&gt; Host 2
+Scanner-&gt; Host 3
+       -&gt; Host 4
+       -&gt; Host 5</code></pre>
+                <p>and process responses as they arrive.</p>
+                <p>The Arduino Uno also only has a 16 MHz 8-bit AVR processor and 2 KB of SRAM. Those limitations make sophisticated asynchronous networking, large host tables, hostname resolution, service detection, and similar functionality increasingly difficult.</p>
+                <p>It is possible to optimize the Arduino scanner, reduce timeouts, or build more complicated logic, but eventually it becomes an exercise in working around the limitations of the platform, when far simpler methods exist.</p>
+            </section>
+            <section aria-labelledby="was-the-arduino-the-wrong-tool">
+                <h2 id="was-the-arduino-the-wrong-tool">Was the Arduino the Wrong Tool?</h2>
+                <p>For building a practical network scanner, probably. As a project to learn about network basics and demonstrate hardware usage, absolutely not!</p>
+                <p>The original goal was to learn basic electronics and put an ethernet shield to use, and using the Arduino forced me to interact with several layers that would normally be hidden by an operating system.</p>
+                <p>Along the way, I encountered hardware pin assignments, SPI chip selection, DHCP, subnet masks, network-address calculations, ICMP Echo Requests, library dependencies, compiler conflicts, and the practical consequences of network timeouts.</p>
+                <p>A Linux computer could easily accomplish the final network scan with a single command, but doing it on an Arduino made the individual components and mechanics much more visible.</p>
+            </section>
+            <section aria-labelledby="moving-to-a-raspberry-pi">
+                <h2 id="moving-to-a-raspberry-pi">Moving to a Raspberry Pi</h2>
+                <p>The logical next version of this project is to move the scanning functionality to a Raspberry Pi Zero 2 W. The Pi can control the same 16×2 display using its I²C interface while using Linux networking tools to perform the actual discovery. That would make it practical to perform ARP discovery, ICMP scanning, hostname resolution, MAC-address collection, and potentially service detection in a fraction of the time.</p>
+                <p>The LCD could then provide a small physical interface:</p>
+                <pre tabindex="0"><code>NETWORK SCAN
+12 HOSTS FOUND</code></pre>
+                <p>followed by individual results:</p>
+                <pre tabindex="0"><code>HOST 3 / 12
+192.168.8.172</code></pre>
+                <p>Buttons could be added to scroll between discovered hosts or initiate another scan.</p>
+            </section>
+            <section aria-labelledby="conclusion">
+                <h2 id="conclusion">Conclusion</h2>
+                <p>The Arduino network scanner ultimately worked. It successfully obtained its network configuration through DHCP, calculated its local network, generated ICMP Echo Requests, detected responsive hosts, measured response times, and scanned an entire /24 network. It was just painfully slow. The 27-minute ping scan made a strong case for why network scanning is usually performed by systems capable of handling many concurrent network operations. However, that limitation was arguably one of the most valuable results of the experiment. Instead of simply running a network-scanning utility, the project exposed many of the lower-level components involved in discovering another computer on a network. In the future I could get an ethernet hat for a Pi Zero, connect a screen, and actually make the tool, but for now this simple experiment is successful!</p>
+            </section>
+        </article>
+    </main>
+</body>
+</html>
