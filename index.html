@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Colton Hooks</title>
+    <title>Colton H.</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/style.css">
 </head>
@@ -28,37 +28,51 @@
             <a href="/contact/">Contact</a>
         </div>
     </nav>
-    <main>
-        <header>
-            <h1>Colton Hooks</h1>
-            <p>Hello! My name is Colton, and this site is a fun outlet where I can throw my ideas out into the void for everyone to see! Thank you for visiting!</p>
+    <main class="home-page">
+        <header class="home-hero projects-intro">
+            <h1>Colton H.</h1>
+            <p class="home-tagline">Cybersecurity • Research • Linux • Homelab</p>
+            <p>I build things, break things, research strange corners of technology, and write about what I learn.</p>
+            <div class="home-actions">
+                <a class="home-button" href="/projects/">Explore Projects <span aria-hidden="true">→</span></a>
+                <a class="home-button home-button--secondary" href="/articles/">Read Articles <span aria-hidden="true">→</span></a>
+            </div>
         </header>
 
-        <section aria-labelledby="about-heading">
+        <section aria-labelledby="featured-work-heading">
+            <h2 id="featured-work-heading">Featured Work</h2>
+            <div class="project-grid home-featured">
+                <a class="paper-card" href="/articles/finding-a-toaster-on-shodan/">
+                    <p class="paper-card__category">Article</p>
+                    <h3 class="paper-card__title">Finding a Toaster on Shodan</h3>
+                    <p class="paper-card__summary">A slightly ridiculous search for internet-connected kitchen appliances, with practical lessons in Shodan, service banners, IoT, MQTT, and NAT.</p>
+                    <span class="paper-card__action">Read article <span aria-hidden="true">→</span></span>
+                </a>
+                <a class="paper-card" href="/papers/proxmox-backup/">
+                    <p class="paper-card__category">Paper</p>
+                    <h3 class="paper-card__title">Saving a Proxmox Instance and Wiping the Disk</h3>
+                    <p class="paper-card__summary">Backing up Proxmox VMs and configuration, verifying the backups for long-term storage, and sanitizing the original SSD.</p>
+                    <span class="paper-card__action">Read paper <span aria-hidden="true">→</span></span>
+                </a>
+                <a class="paper-card" href="/projects/building-this-website/">
+                    <p class="paper-card__category">Project</p>
+                    <h3 class="paper-card__title">Building This Website</h3>
+                    <p class="paper-card__summary">Learning Git, GitHub workflows, responsive web design, and GitHub Pages by building and maintaining this site.</p>
+                    <span class="paper-card__action">View project <span aria-hidden="true">→</span></span>
+                </a>
+            </div>
+        </section>
+
+        <section class="home-about" aria-labelledby="about-heading">
             <h2 id="about-heading">About</h2>
-            <p>A brief "About me", I have always been fascinated by technology, research, and finding ways to enjoy life! I am spending more and more of my free time doing things like setting up a homelab, doing cybersecurity research, and daydreaming. I had the idea to create a website where I can upload research, demonstrate what I am learning, and just have a hub for whatever is going on in my life.</p>
-            <a href="/about/">To read more, click here!</a>
+            <p>I have a bachelor's degree in Cybersecurity and experience in IT management, compliance auditing, and pentesting. Away from tech, I enjoy rock climbing, charcoal grilling, and hiking.</p>
+            <a href="/about/">Learn more <span aria-hidden="true">→</span></a>
         </section>
 
-        <section aria-labelledby="featured-projects-heading">
-            <h2 id="featured-projects-heading">Here are some projects I am most proud of. To see more, <a href="/projects/">click here!</a></h2>
-            <ul>
-                <li>[Featured project]</li>
-                <li>[Featured project]</li>
-            </ul>
-        </section>
-
-        <section aria-labelledby="exploring-heading">
-            <h2 id="exploring-heading">Some interesting topics I am exploring at the moment...</h2>
-            <ul>
-                <li>My paper on saving a Proxmox server for later...</li>
-                <li>Building this website, and what it is teaching me!</li>
-            </ul>
-        </section>
-
-        <section aria-labelledby="contact-heading">
-            <h2 id="contact-heading">Contact</h2>
-            <p>Want to reach out or follow me on social media for more content? <a href="/contact/">Click here!</a></p>
+        <section class="home-contact" aria-labelledby="contact-heading">
+            <h2 id="contact-heading">Let's connect</h2>
+            <p>Want to talk tech or get in touch?</p>
+            <a class="home-button" href="/contact/">Contact me <span aria-hidden="true">→</span></a>
         </section>
     </main>
 </body>
