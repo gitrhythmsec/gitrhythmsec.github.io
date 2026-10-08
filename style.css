@@ -167,6 +167,10 @@ a.contact-card:focus-visible {
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
 }
 
+.projects-page .project-grid {
+    align-items: start;
+}
+
 .project-card,
 .paper-card {
     box-sizing: border-box;

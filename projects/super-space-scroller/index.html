@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Super Space Scroller - Projects - Colton H.</title>
+    <meta name="author" content="Colton H.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <nav aria-label="Main navigation">
+        <details class="mobile-nav">
+            <summary><span aria-hidden="true">☰</span> Menu</summary>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/projects/">Projects</a>
+                <a href="/articles/">Articles</a>
+                <a href="/papers/">Papers</a>
+                <a href="/contact/">Contact</a>
+            </div>
+        </details>
+        <div class="desktop-nav nav-links">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/projects/">Projects</a>
+            <a href="/articles/">Articles</a>
+            <a href="/papers/">Papers</a>
+            <a href="/contact/">Contact</a>
+        </div>
+    </nav>
+    <main class="article-page">
+        <p><a href="/projects/">Back to Projects</a></p>
+        <article>
+            <header class="article-header">
+                <p class="paper-card__category">C / Game Development / Memory Management</p>
+                <h1>Super Space Scroller</h1>
+                <p class="paper-card__meta"><span>By Colton H.</span><span>Status: Completed</span></p>
+            </header>
+
+            <section aria-labelledby="overview-heading">
+                <h2 id="overview-heading">Overview</h2>
+                <p>This game came from a semester-long project for my C programming class in college. In the beginning, we were told about the final being a large project that would have to show some level of understanding above a simple project like “Pounds to Kilograms” or “Fahrenheit to Celsius”. Originally, I was fascinated by interacting with hardware and the low level of the C language. I wanted to demonstrate things like memory management, complex logic, and user interaction. I originally did not intend to make a game, I was mostly interested in using all of the abilities of the language.</p>
+                <p>I was looking at dynamic memory allocation, and asked myself “how can I visualize an array” while looking at blocks written in my notebook. This would lead to printing an array out and showing values moving through it (the basic concept of the game). Moving values in an array isn’t too entertaining, but in a prototype I saw an asterisk go from the right side to the left, and it reminded me of classic video games where you move to avoid obstacles. From there I realized I could generate obstacles and make a character dodge them. That was the perfect way to visualize memory. From there, the game took off, I wrote more in my free time, and it became my hobby for the semester. It was also valuable since AI was still rather primitive and not very advanced, so I was living in StackOverflow (remember that site? Lol) and every C tutorial ever.</p>
+            </section>
+
+            <section aria-labelledby="what-the-game-does-heading">
+                <h2 id="what-the-game-does-heading">What the Game Does</h2>
+                <p>Essentially, the game generates 10 arrays and displays them 5 tall and two wide. The arrays on the left are 2 characters long, and the arrays on the right are 75 characters long. The left arrays are either blank or “8&gt;”, and the “8&gt;” is the character. The right arrays are either the coins, the obstacles, or blanks. The game prints out each array, then collects a user input (up, down, or right), moves the character accordingly, deletes the first item in the array, and adds in a space, coin, or obstacle to the end of the array. After every motion, it checks each lane to see whether or not the player and an obstacle are in the same position. If they are, the game ends, if not it continues.</p>
+            </section>
+
+            <section aria-labelledby="how-the-scrolling-works-heading">
+                <h2 id="how-the-scrolling-works-heading">How the Scrolling Works</h2>
+                <p>Scrolling works by rendering all of the arrays before collecting the user input. If the player did not “hit” an obstacle, it removes the first character of the array and generates a new one at the end. When the next frame prints out, everything in the right arrays will have shifted one position left. Scrolling only occurs after a player moves. I sell that as a feature but really the automatic scrolling would require multithreading and make the project way too complicated to be done in a rookie semester by hand.</p>
+            </section>
+
+            <section aria-labelledby="game-state-and-difficulty-heading">
+                <h2 id="game-state-and-difficulty-heading">Game State and Difficulty</h2>
+                <p>Score is calculated based on motion. Every time the player moves in any direction, they are awarded one point. The game increases difficulty as it progresses. Every hundred points, the spawn rate of both coins and obstacles increases, with the highest difficulty coming after the player scores 400 points, in which two obstacles and two coins will spawn with every motion. It gets quite chaotic and cluttered!</p>
+                <p>I considered adding variable difficulty through more lanes up and down, and some of the code and comments support these changes. Some issues arose with scaling spawning coins and obstacles to more lanes. For example, the release has five lanes, and the hardest difficulty spawns two coins and obstacles, leaving one blank. I couldn’t figure out a way to spawn more than four objects without copy-pasting the code for more or less lanes and duplicating the hundreds of lines for each.</p>
+            </section>
+
+            <section aria-labelledby="collision-and-collection-logic-heading">
+                <h2 id="collision-and-collection-logic-heading">Collision and Collection Logic</h2>
+                <p>The logic behind the player hitting something was a rather large hill to climb. The idea originally had only 5 arrays, with the character being placed in the first and second position, but the logic behind the motion was difficult at the time. At that point, I thought about just adding the left arrays solely for the character, but that still didn’t magically work. That’s when I wrote the primitive manual checks to see if the first item in the array was an obstacle or coin, and if the character was in that same row, that was a collision. Yes, the checks for coins and obstacles are two separate functions for some reason.</p>
+                <p>An interesting mechanic (it’s a bug really) that came from the collision logic was that if the object was in the first position of the array above or below, the player could move through the object, and it would not end the game or award a coin. This was left in the game for a few reasons. First, I couldn’t get the objects to jump into the left arrays, so side collisions were not possible. The other reason was that it would help the player just a little bit when the game was at its maximum difficulty, getting to 400 points was not a guaranteed loss with this mechanic.</p>
+            </section>
+
+            <section aria-labelledby="saving-high-scores-heading">
+                <h2 id="saving-high-scores-heading">Saving High Scores</h2>
+                <p>Near the end of the semester, I realized that I made a game where you weren’t able to save your score. Google searches only returned complex solutions specific to other people’s projects, and persistent memory was really a problem. While working on a side project, I was reading and writing to text files, and realized that was the key to saving a high score beyond closing the program. Saving the score would literally write [score] by [name given] to the text file. If no file was found it would ask to write a new one, if a file was found you had the option to read and overwrite that score. Due to the nature of this simple read/write functionality, you could only save one score.</p>
+                <p>The game was quite prone to hackers, as the save file was plain text. I looked at other methods of saving the file, but ultimately I ran out of time. Also, the buffers were all insecure, so anything like a 10001 save name or a 201 character save file would immediately crash the game upon reading. Very sticks-and-stones but it worked enough to submit for the final!</p>
+            </section>
+
+            <section aria-labelledby="memory-management-heading">
+                <h2 id="memory-management-heading">Memory Management</h2>
+                <p>The game development side of the project shifted the focus away from the original goal of extensive memory management a bit, but I still was able to implement it into the final project. I stored the entire game in arrays in memory, inconsistently used dynamic memory allocation, and the game never ate memory without returning it to the OS, so that was a win. I got to use debuggers and memory dumps to see how the game behaved, and even how you could see the character and objects in those memory dumps!</p>
+            </section>
+
+            <section aria-labelledby="what-i-learned-heading">
+                <h2 id="what-i-learned-heading">What I Learned</h2>
+                <p>I believe, to this day, that reading, writing, and working with C code is a great way to get solid foundational understanding of how technology works. I got to see simple concepts like user I/O and more complex ideas like moving and manipulating data in memory. I haven’t fully kept up with C programming since, but the logic and math required to get that far with this project have been incredibly useful in the technical side of my career, even today! I still try and use C in side projects, its low-level nature makes it quite a bit more complex than other languages like Python, but I enjoy all of the time I do get to spend with it.</p>
+            </section>
+
+            <section aria-labelledby="what-i-would-change-today-heading">
+                <h2 id="what-i-would-change-today-heading">What I Would Change Today</h2>
+                <p>In truth, my career hasn’t given me much more knowledge in game development, but in rereading the source code, I do see ways I could at least combine things down. It is funny to see that coins and obstacles are checked separately, I’m sure I could pair those into one function somewhat easily. I also see that I was using dynamic allocation in some parts, so I don’t know why the save functions use static arrays. Maybe I was in a rush, who knows.</p>
+                <p>I have been proud of this project for years, and I honestly still really am. Any experienced C programmer would laugh at my code, and I would probably laugh with them. I am most proud that I did all of that after one semester, with no prior experience, and no tools such as AI or ripping an existing game. I remember that I really enjoyed the development process, it is surrounded with fond memories, so I don’t think I would change anything about it. I could easily make the remastered version now though lol, and I’m sure I would love that too!</p>
+            </section>
+
+            <section aria-labelledby="original-source-heading">
+                <h2 id="original-source-heading">Original Source</h2>
+                <p>Anyone experienced with Git would laugh that I just uploaded the files, no version control, no knowledge of Git and its usefulness, none of the history. Luckily the comments still exist with insights to the development process. If you’re interested in reading the source code, here is the link!</p>
+                <p><a class="home-button" href="https://github.com/gitrhythmsec/SuperSpaceScroller" target="_blank" rel="noopener noreferrer">View the original source on GitHub <span aria-hidden="true">↗</span></a></p>
+            </section>
+        </article>
+        <p><a href="/projects/">Back to Projects</a></p>
+    </main>
+</body>
+</html>
