@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Self-Hosting UniFi Network Management on a Raspberry Pi 5 - Projects - Colton H.</title>
+    <meta name="author" content="Colton H.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <nav aria-label="Main navigation">
+        <details class="mobile-nav">
+            <summary><span aria-hidden="true">☰</span> Menu</summary>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/projects/">Projects</a>
+                <a href="/articles/">Articles</a>
+                <a href="/papers/">Papers</a>
+                <a href="/contact/">Contact</a>
+            </div>
+        </details>
+        <div class="desktop-nav nav-links">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/projects/">Projects</a>
+            <a href="/articles/">Articles</a>
+            <a href="/papers/">Papers</a>
+            <a href="/contact/">Contact</a>
+        </div>
+    </nav>
+    <main class="article-page">
+        <p><a href="/projects/">Back to Projects</a></p>
+        <article>
+            <header class="article-header">
+                <p class="paper-card__category">Hardware / Networking / Linux</p>
+                <h1>Self-Hosting UniFi Network Management on a Raspberry Pi 5</h1>
+                <p class="paper-card__meta"><span>By Colton H.</span><span>Status: Completed</span></p>
+            </header>
+
+            <section aria-labelledby="overview-heading">
+                <h2 id="overview-heading">Overview</h2>
+                <p>I wanted to get hands-on experience with managed switches and network management in my home lab. Until this project, most of the switches I had used personally were unmanaged devices where the only real configuration was deciding what cable went into what port.</p>
+                <p>I picked up a Ubiquiti UniFi Lite 8 PoE switch as a relatively inexpensive way to start working with managed switching concepts such as port configuration, PoE management, VLANs, port profiles, and network segmentation.</p>
+                <p>Rather than buying a dedicated UniFi CloudKey or gateway, I decided to self-host the UniFi management software on hardware I already owned.</p>
+                <p>The final setup uses a Raspberry Pi 5 running Ubuntu Server 24.04 LTS and UniFi OS Server to manage the switch.</p>
+            </section>
+
+            <section aria-labelledby="hardware-and-network-layout-heading">
+                <h2 id="hardware-and-network-layout-heading">Hardware and Network Layout</h2>
+                <p>The main components are:</p>
+                <ul>
+                    <li>Raspberry Pi 5</li>
+                    <li>Ubiquiti UniFi Lite 8 PoE</li>
+                    <li>GL.iNet GL-AR750S router</li>
+                    <li>Existing Ethernet connection to the rest of the network</li>
+                </ul>
+                <p>The basic network path is:</p>
+                <pre tabindex="0"><code>Upstream Network
+       |
+GL.iNet Router
+192.168.8.1
+       |
+UniFi Lite 8 PoE
+192.168.8.2
+       |
+Raspberry Pi 5
+192.168.8.3</code></pre>
+                <p>The GL.iNet remains the router and firewall for the lab, while the UniFi switch handles Layer 2 switching and managed-port functionality.</p>
+            </section>
+
+            <section aria-labelledby="choosing-a-unifi-controller-heading">
+                <h2 id="choosing-a-unifi-controller-heading">Choosing a UniFi Controller</h2>
+                <p>UniFi switches do not rely on a traditional standalone web interface for their full management experience. Instead, devices are adopted into a UniFi controller.</p>
+                <p>Ubiquiti sells dedicated hardware for this purpose, but UniFi OS Server can also be self-hosted.</p>
+                <p>I already had a Raspberry Pi 5 available, so using it as the controller gave me an opportunity to learn more about both UniFi and Linux-based infrastructure without buying another appliance.</p>
+            </section>
+
+            <section aria-labelledby="the-first-installation-attempt-heading">
+                <h2 id="the-first-installation-attempt-heading">The First Installation Attempt</h2>
+                <p>My first attempt was to install UniFi OS Server on an existing Ubuntu 22.04 server.</p>
+                <p>The installer immediately exposed a compatibility problem:</p>
+                <pre tabindex="0"><code>Installed podman version 3.4.4 is below
+the required minimum version 4.3.1</code></pre>
+                <p>Ubuntu 22.04's available Podman package was too old for the version of UniFi OS Server I was trying to install.</p>
+                <p>I considered upgrading that server, but it already hosted other services and I did not want to introduce unnecessary changes just for the UniFi controller.</p>
+            </section>
+
+            <section aria-labelledby="reusing-the-raspberry-pi-5-heading">
+                <h2 id="reusing-the-raspberry-pi-5-heading">Reusing the Raspberry Pi 5</h2>
+                <p>The Raspberry Pi 5 had previously been running Debian 12.</p>
+                <p>I initially explored upgrading that installation in place, but the proposed Debian major-version upgrade involved more than a thousand package changes along with Raspberry Pi-specific kernel, GPIO, camera, and desktop packages.</p>
+                <p>Since the Pi contained very little that could not easily be recreated, I decided that a clean installation was a better solution.</p>
+                <p>I preserved the original SD card rather than overwriting it and installed Ubuntu Server 24.04 LTS ARM64 on a separate card.</p>
+                <p>This also gave me an easy rollback option if I later discovered something important on the old installation.</p>
+            </section>
+
+            <section aria-labelledby="installing-unifi-os-server-heading">
+                <h2 id="installing-unifi-os-server-heading">Installing UniFi OS Server</h2>
+                <p>Once Ubuntu Server was running, I installed the required Podman runtime and downloaded the ARM64 UniFi OS Server installer.</p>
+                <p>The installer configured UniFi OS Server as a systemd service.</p>
+                <p>After installation, the service could be verified with:</p>
+                <pre tabindex="0"><code>systemctl status uosserver</code></pre>
+                <p>The resulting service was enabled and running automatically at boot.</p>
+                <p>I then accessed the locally hosted UniFi interface through a browser, created the management account, and allowed the controller to discover the Lite 8 PoE switch.</p>
+                <p>The switch appeared automatically and was adopted into the controller.</p>
+            </section>
+
+            <section aria-labelledby="cleaning-up-the-pi-s-network-configuration-heading">
+                <h2 id="cleaning-up-the-pi-s-network-configuration-heading">Cleaning Up the Pi's Network Configuration</h2>
+                <p>The Pi initially had both Ethernet and Wi-Fi active on the same subnet.</p>
+                <p>The routing table contained two default routes:</p>
+                <pre tabindex="0"><code>default via 192.168.8.1 dev eth0 metric 100
+default via 192.168.8.1 dev wlan0 metric 600</code></pre>
+                <p>Linux correctly preferred Ethernet because it had the lower route metric, but having two interfaces on the same management network was unnecessary for an infrastructure server.</p>
+                <p>I removed the Wi-Fi configuration from Netplan and left Ethernet as the Pi's only local-network interface.</p>
+                <p>Tailscale remains installed separately for remote access.</p>
+            </section>
+
+            <section aria-labelledby="organizing-infrastructure-addresses-heading">
+                <h2 id="organizing-infrastructure-addresses-heading">Organizing Infrastructure Addresses</h2>
+                <p>I also wanted the infrastructure devices to have predictable addresses.</p>
+                <p>Rather than configuring static addresses directly on each device, I used DHCP reservations on the GL.iNet router.</p>
+                <p>The resulting layout is:</p>
+                <pre tabindex="0"><code>192.168.8.1    GL.iNet router/firewall
+192.168.8.2    UniFi Lite 8 PoE
+192.168.8.3    Raspberry Pi / UniFi OS Server</code></pre>
+                <p>Normal DHCP clients begin at .100, leaving the lower portion of the subnet available for infrastructure.</p>
+                <p>This keeps the configuration centralized while still allowing the devices themselves to use DHCP.</p>
+            </section>
+
+            <section aria-labelledby="what-i-learned-heading">
+                <h2 id="what-i-learned-heading">What I Learned</h2>
+                <p>The project gave me practical experience with several concepts that are easy to understand theoretically but much more useful to see operating together.</p>
+                <p>I worked with:</p>
+                <ul>
+                    <li>Managed switching</li>
+                    <li>UniFi device discovery and adoption</li>
+                    <li>Self-hosted network management</li>
+                    <li>PoE-capable switching</li>
+                    <li>DHCP reservations</li>
+                    <li>Linux route metrics</li>
+                    <li>Netplan network configuration</li>
+                    <li>systemd service management</li>
+                    <li>Podman</li>
+                    <li>ARM64 software compatibility</li>
+                    <li>Separating network management from packet forwarding</li>
+                </ul>
+                <p>One useful distinction was understanding that the UniFi controller is part of the management plane, not the traffic path itself.</p>
+                <p>The Raspberry Pi does not sit between devices passing traffic through the switch. If the controller is temporarily unavailable, the switch continues forwarding traffic using its existing configuration.</p>
+            </section>
+
+            <section aria-labelledby="current-state-and-next-steps-heading">
+                <h2 id="current-state-and-next-steps-heading">Current State and Next Steps</h2>
+                <p>The UniFi Lite 8 PoE is now adopted and managed by the Raspberry Pi 5, and the controller runs automatically as a persistent service.</p>
+                <p>For now, I am keeping the switching configuration relatively simple.</p>
+                <p>Future work may include VLANs, port profiles, management segmentation, port mirroring, and more advanced firewall policy.</p>
+                <p>I plan to explore several of those topics as part of a separate Suricata IDS/IPS project, where the managed switch can provide traffic visibility and segmentation for security monitoring.</p>
+            </section>
+        </article>
+        <p><a href="/projects/">Back to Projects</a></p>
+    </main>
+</body>
+</html>
