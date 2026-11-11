@@ -41,7 +41,8 @@ nav .mobile-nav {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    .nav-links a[href="/aifree/"] {
+    .nav-links a[href="/aifree/"],
+    .ai-free-glitch {
         animation: ai-free-glitch 6s step-end infinite;
     }
 }
@@ -453,7 +454,7 @@ main pre:focus-visible,
     margin-top: 0;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 760px) {
     nav .mobile-nav {
         display: block;
     }
@@ -473,6 +474,9 @@ main pre:focus-visible,
         margin-right: 0;
     }
 
+}
+
+@media (max-width: 600px) {
     .contact-grid {
         grid-template-columns: 1fr;
     }
