@@ -1,0 +1,16 @@
+.body {
+    margin-left: 15%;
+    width: 70%;
+}
+
+.content {
+    margin: 0 150px 0 200px;
+    text-align: center;
+
+}
+
+#nav1 {
+	position: absolute;
+	left: 15%;
+	width: 200px;
+}

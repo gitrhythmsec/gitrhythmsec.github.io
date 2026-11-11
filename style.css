@@ -18,11 +18,52 @@ nav {
 }
 
 nav .desktop-nav {
-    display: block;
+    display: flex;
+    align-items: center;
 }
 
 nav .mobile-nav {
     display: none;
+}
+
+/* Keep the AI Free destination distinct without changing the shared markup. */
+.nav-links a[href="/aifree/"] {
+    display: inline-block;
+    align-self: flex-start;
+    white-space: nowrap;
+}
+
+.desktop-nav a[href="/aifree/"] {
+    margin-left: auto;
+    margin-right: 0;
+    padding-left: 16px;
+    border-left: 1px solid #e1e5eb;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .nav-links a[href="/aifree/"] {
+        animation: ai-free-glitch 6s step-end infinite;
+    }
+}
+
+/* A brief jitter at the end of each cycle, with long pauses between bursts. */
+@keyframes ai-free-glitch {
+    0%, 95%, 100% {
+        transform: translate(0, 0);
+        text-shadow: none;
+    }
+    96%, 98% {
+        transform: translate(-2px, 0);
+        text-shadow: 2px 0 rgb(220 35 55 / 80%), -2px 0 rgb(0 180 200 / 80%);
+    }
+    97%, 99% {
+        transform: translate(2px, 0);
+        text-shadow: -2px 0 rgb(220 35 55 / 80%), 2px 0 rgb(0 180 200 / 80%);
+    }
+    /* One 60 ms green signal flash before the next chromatic frame. */
+    97% {
+        text-shadow: -2px 0 rgb(220 35 55 / 80%), 2px 0 #39ff14, 0 0 3px rgb(57 255 20 / 80%);
+    }
 }
 
 .mobile-nav summary {
