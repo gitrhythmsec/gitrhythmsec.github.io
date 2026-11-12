@@ -45,7 +45,50 @@
 
         <section aria-labelledby="entries-heading">
             <h2 id="entries-heading">Investigation Notes</h2>
-            <p>No entries yet. Short investigation writeups will appear here as I document them.</p>
+            <div class="paper-grid">
+                <a class="paper-card" href="/quick-bits/steam-priority-one-alert/">
+                    <p class="paper-card__category">Security / IDS</p>
+                    <h3 class="paper-card__title">Steam Set Off My IDS</h3>
+                    <p class="paper-card__meta">Status: Benign</p>
+                    <p class="paper-card__summary">Steam started in the background and triggered an unexpected Priority 1 Suricata rule. I traced the alert to its HTTP User-Agent and turned the surprise into a dashboard test.</p>
+                    <span class="paper-card__action">Read Quick Bit <span aria-hidden="true">→</span></span>
+                </a>
+                <a class="paper-card" href="/quick-bits/nmap-exposed-git-and-weird-http/">
+                    <p class="paper-card__category">Security / Reconnaissance</p>
+                    <h3 class="paper-card__title">Nmap Found My <code>.git</code> Directory</h3>
+                    <p class="paper-card__meta">Status: Informational</p>
+                    <p class="paper-card__summary">A routine scan produced some alarming-looking Python HTTP logs—and discovered that my website preview was serving Git metadata.</p>
+                    <span class="paper-card__action">Read Quick Bit <span aria-hidden="true">→</span></span>
+                </a>
+                <a class="paper-card" href="/quick-bits/why-the-ids-missed-an-nmap-scan/">
+                    <p class="paper-card__category">Security / Networking</p>
+                    <h3 class="paper-card__title">The Nmap Scan My IDS Missed</h3>
+                    <p class="paper-card__meta">Status: Informational</p>
+                    <p class="paper-card__summary">A full-port scan produced no IDS alert. Comparing Nmap with <code>tcpdump</code> exposed the difference between a detection failure and a packet-visibility gap.</p>
+                    <span class="paper-card__action">Read Quick Bit <span aria-hidden="true">→</span></span>
+                </a>
+                <a class="paper-card" href="/quick-bits/unifi-ssh-scan-that-wasnt/">
+                    <p class="paper-card__category">Security / Network Management</p>
+                    <h3 class="paper-card__title">UniFi Looked Like an SSH Scanner</h3>
+                    <p class="paper-card__meta">Status: Resolved</p>
+                    <p class="paper-card__summary">Suricata flagged unexpected outbound SSH traffic. Containerized UniFi logs matched the timestamps and revealed a failed switch-adoption attempt.</p>
+                    <span class="paper-card__action">Read Quick Bit <span aria-hidden="true">→</span></span>
+                </a>
+                <a class="paper-card" href="/quick-bits/the-smb-connection-to-my-old-university/">
+                    <p class="paper-card__category">Security / Endpoint Investigation</p>
+                    <h3 class="paper-card__title">An SMB Connection from My College Days</h3>
+                    <p class="paper-card__meta">Status: Investigating</p>
+                    <p class="paper-card__summary">An unexpected outbound SMB attempt led me through archived flows, IP ownership, old Wi-Fi profiles, and a matching saved credential—without proving the initiating process.</p>
+                    <span class="paper-card__action">Read Quick Bit <span aria-hidden="true">→</span></span>
+                </a>
+                <a class="paper-card" href="/quick-bits/router-dashboard-triggered-http-alerts/">
+                    <p class="paper-card__category">Security / Troubleshooting</p>
+                    <h3 class="paper-card__title">My Router Admin Tab Looked Suspicious</h3>
+                    <p class="paper-card__meta">Status: Benign</p>
+                    <p class="paper-card__summary">An HTTP authorization alert turned out to follow my router's Firefox admin tab. Closing and reopening it made the alerts stop and return.</p>
+                    <span class="paper-card__action">Read Quick Bit <span aria-hidden="true">→</span></span>
+                </a>
+            </div>
         </section>
     </main>
 

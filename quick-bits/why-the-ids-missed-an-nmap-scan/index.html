@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Why My IDS Missed a Full Nmap Scan - Quick Bits - Colton H.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <nav aria-label="Main navigation">
+        <details class="mobile-nav">
+            <summary><span aria-hidden="true">☰</span> Menu</summary>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/projects/">Projects</a>
+                <a href="/articles/">Articles</a>
+                <a href="/quick-bits/">Quick Bits</a>
+                <a href="/papers/">Papers</a>
+                <a href="/contact/">Contact</a>
+                <a href="/aifree/">AI Free</a>
+            </div>
+        </details>
+        <div class="desktop-nav nav-links">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/projects/">Projects</a>
+            <a href="/articles/">Articles</a>
+            <a href="/quick-bits/">Quick Bits</a>
+            <a href="/papers/">Papers</a>
+            <a href="/contact/">Contact</a>
+            <a href="/aifree/">AI Free</a>
+        </div>
+    </nav>
+
+    <main class="article-page quick-bit-page">
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+        <article>
+            <header class="article-header">
+                <p class="paper-card__category">Security / Networking</p>
+                <h1>Why My IDS Missed a Full Nmap Scan</h1>
+                <p class="paper-card__meta"><span>Status: Informational</span><span>November 6, 2026</span></p>
+            </header>
+
+            <section aria-labelledby="what-i-saw">
+                <h2 id="what-i-saw">What I Saw</h2>
+                <p>I ran a full TCP port scan against a Raspberry Pi in my lab. Nmap checked all <strong>65,535 TCP ports</strong> and found three open, but Suricata and WatcherDash didn't alert on the scan. That was a little embarrassing for an IDS I had just been testing.</p>
+            </section>
+            <section aria-labelledby="investigation">
+                <h2 id="investigation">Investigation</h2>
+                <p>I compared Nmap's successful results with Suricata's view and ran <code>tcpdump</code> on the IDS capture interface while testing again. The capture showed the target Pi communicating with internet hosts, but not the local scan probes I expected.</p>
+                <p>My IDS was using a mirrored switch port associated with the <strong>router uplink</strong>. The scanning machine and target were on the same local network, so their packets could be switched directly between local ports without crossing that uplink.</p>
+            </section>
+            <section aria-labelledby="what-it-turned-out-to-be">
+                <h2 id="what-it-turned-out-to-be">What It Turned Out to Be</h2>
+                <p><strong>A likely monitoring visibility gap, not proof that Suricata's detection rules failed.</strong> The captured traffic was consistent with uplink mirroring, although the available test didn't establish the switch's complete forwarding behavior. The sensor cannot alert on packets it never receives.</p>
+            </section>
+            <section aria-labelledby="why-it-mattered">
+                <h2 id="why-it-mattered">Why It Mattered</h2>
+                <p>Seeing internet traffic wasn't the same as seeing every LAN conversation. I chose to keep the existing uplink-focused setup for now, while recognizing that local east-west traffic can be missed and that even captured traffic doesn't guarantee an alert.</p>
+            </section>
+        </article>
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+    </main>
+</body>
+</html>

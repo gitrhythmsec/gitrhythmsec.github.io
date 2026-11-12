@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Nmap Scan Found More Than Open Ports - Quick Bits - Colton H.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <nav aria-label="Main navigation">
+        <details class="mobile-nav">
+            <summary><span aria-hidden="true">☰</span> Menu</summary>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/projects/">Projects</a>
+                <a href="/articles/">Articles</a>
+                <a href="/quick-bits/">Quick Bits</a>
+                <a href="/papers/">Papers</a>
+                <a href="/contact/">Contact</a>
+                <a href="/aifree/">AI Free</a>
+            </div>
+        </details>
+        <div class="desktop-nav nav-links">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/projects/">Projects</a>
+            <a href="/articles/">Articles</a>
+            <a href="/quick-bits/">Quick Bits</a>
+            <a href="/papers/">Papers</a>
+            <a href="/contact/">Contact</a>
+            <a href="/aifree/">AI Free</a>
+        </div>
+    </nav>
+
+    <main class="article-page quick-bit-page">
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+        <article>
+            <header class="article-header">
+                <p class="paper-card__category">Security / Reconnaissance</p>
+                <h1>My Nmap Scan Found More Than Open Ports</h1>
+                <p class="paper-card__meta"><span>Status: Informational</span><span>November 6, 2026</span></p>
+            </header>
+
+            <section aria-labelledby="what-i-saw">
+                <h2 id="what-i-saw">What I Saw</h2>
+                <p>I scanned one of my development Raspberry Pis for fun. Nmap found SSH, a Python website-preview server on <strong>TCP 1337</strong>, and a Vite development server on <strong>TCP 5173</strong>. Later, the Python server's logs looked like somebody was throwing random web requests and binary garbage at it.</p>
+            </section>
+            <section aria-labelledby="investigation">
+                <h2 id="investigation">Investigation</h2>
+                <p>I compared the server logs against my own scan time and source machine. They contained requests for nonexistent paths, unsupported HTTP methods such as <code>PROPFIND</code>, and TLS handshake bytes sent to a plain HTTP service. One request was especially definitive:</p>
+                <pre tabindex="0"><code>GET /nmaplowercheck... HTTP/1.1  404</code></pre>
+                <p>Nmap's service detection was probing how the server responded. Its <code>http-git</code> script also found an accessible <code>.git</code> directory. Requests to <code>/.git/config</code> and related metadata returned <strong>HTTP 200</strong>, allowing Nmap to identify the repository's remote and latest commit message.</p>
+            </section>
+            <section aria-labelledby="what-it-turned-out-to-be">
+                <h2 id="what-it-turned-out-to-be">What It Turned Out to Be</h2>
+                <p><strong>My own authorized Nmap scan</strong>, not an unexpected visitor. The <code>.git</code> exposure was real, though. The repository was for a public website, but serving Git internals directly isn't a practice I want to repeat with private code.</p>
+            </section>
+            <section aria-labelledby="why-it-mattered">
+                <h2 id="why-it-mattered">Why It Mattered</h2>
+                <p>Recognizing scanner fingerprints kept me from mistaking routine testing for an incident. It also gave me a concrete web-server configuration issue to clean up: serve a separate preview directory without <code>.git</code>.</p>
+            </section>
+        </article>
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+    </main>
+</body>
+</html>

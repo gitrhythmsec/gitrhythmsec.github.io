@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>When Steam Triggered a Priority 1 Suricata Alert - Quick Bits - Colton H.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <nav aria-label="Main navigation">
+        <details class="mobile-nav">
+            <summary><span aria-hidden="true">☰</span> Menu</summary>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/projects/">Projects</a>
+                <a href="/articles/">Articles</a>
+                <a href="/quick-bits/">Quick Bits</a>
+                <a href="/papers/">Papers</a>
+                <a href="/contact/">Contact</a>
+                <a href="/aifree/">AI Free</a>
+            </div>
+        </details>
+        <div class="desktop-nav nav-links">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/projects/">Projects</a>
+            <a href="/articles/">Articles</a>
+            <a href="/quick-bits/">Quick Bits</a>
+            <a href="/papers/">Papers</a>
+            <a href="/contact/">Contact</a>
+            <a href="/aifree/">AI Free</a>
+        </div>
+    </nav>
+
+    <main class="article-page quick-bit-page">
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+        <article>
+            <header class="article-header">
+                <p class="paper-card__category">Security / IDS</p>
+                <h1>When Steam Triggered a Priority 1 Suricata Alert</h1>
+                <p class="paper-card__meta"><span>Status: Benign</span><span>October 2026</span></p>
+            </header>
+
+            <section aria-labelledby="what-i-saw">
+                <h2 id="what-i-saw">What I Saw</h2>
+                <p>I was testing my Suricata IDS when WatcherDash suddenly lit up red with a Priority 1 alert. I wasn't deliberately testing Steam at the time, so seeing an unexpected high-priority alert was a bit of a scare.</p>
+            </section>
+            <section aria-labelledby="investigation">
+                <h2 id="investigation">Investigation</h2>
+                <p>The alert was <code>ET USER_AGENTS Steam HTTP Client User-Agent (SID 2028651)</code>. I checked the alert details and the surrounding HTTP activity in Suricata's logs. The traffic came from my Windows workstation, and Steam had started automatically without me noticing.</p>
+                <p>The signature was matching Steam's HTTP User-Agent, not demonstrating that a compromise had occurred. The alert's priority was worth investigating, but it didn't replace the need for context.</p>
+            </section>
+            <section aria-labelledby="what-it-turned-out-to-be">
+                <h2 id="what-it-turned-out-to-be">What It Turned Out to Be</h2>
+                <p><strong>Normal Steam traffic.</strong> Once I identified the source, the surprising alert became useful: I could open Steam again to test WatcherDash's pinned red-alert display with recognizable traffic.</p>
+            </section>
+            <section aria-labelledby="why-it-mattered">
+                <h2 id="why-it-mattered">Why It Mattered</h2>
+                <p>My first instinct was to investigate the Priority 1 alert, not assume it represented a real attack. A high-priority rule match can still have an ordinary explanation. Also, I accidentally found a convenient repeatable test for my dashboard. Not bad for a surprise from a game client.</p>
+            </section>
+        </article>
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+    </main>
+</body>
+</html>

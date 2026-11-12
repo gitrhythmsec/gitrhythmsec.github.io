@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>The Outbound SSH Scan That Wasn&#x27;t - Quick Bits - Colton H.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <nav aria-label="Main navigation">
+        <details class="mobile-nav">
+            <summary><span aria-hidden="true">☰</span> Menu</summary>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/projects/">Projects</a>
+                <a href="/articles/">Articles</a>
+                <a href="/quick-bits/">Quick Bits</a>
+                <a href="/papers/">Papers</a>
+                <a href="/contact/">Contact</a>
+                <a href="/aifree/">AI Free</a>
+            </div>
+        </details>
+        <div class="desktop-nav nav-links">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/projects/">Projects</a>
+            <a href="/articles/">Articles</a>
+            <a href="/quick-bits/">Quick Bits</a>
+            <a href="/papers/">Papers</a>
+            <a href="/contact/">Contact</a>
+            <a href="/aifree/">AI Free</a>
+        </div>
+    </nav>
+
+    <main class="article-page quick-bit-page">
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+        <article>
+            <header class="article-header">
+                <p class="paper-card__category">Security / Network Management</p>
+                <h1>The Outbound SSH Scan That Wasn&#x27;t</h1>
+                <p class="paper-card__meta"><span>Status: Resolved</span><span>October 29–30, 2026</span></p>
+            </header>
+
+            <section aria-labelledby="what-i-saw">
+                <h2 id="what-i-saw">What I Saw</h2>
+                <p>Suricata reported <code>ET SCAN Potential SSH Scan OUTBOUND (SID 2003068, Priority 2)</code> from a Raspberry Pi hosting my UniFi controller. The destination was an unfamiliar private address outside my normal LAN. I had no reason to expect that Pi to be scanning anything.</p>
+            </section>
+            <section aria-labelledby="investigation">
+                <h2 id="investigation">Investigation</h2>
+                <p>I checked the Suricata flow details. The packets targeted <strong>TCP 22</strong>, with no responses visible in the captured flow. A route lookup showed the Pi would send traffic for that address through the normal gateway; it didn't indicate a mysterious second local network.</p>
+                <p>Then I traced the UniFi OS Server process into its <strong>rootless Podman container</strong>. Searching the application logs inside the container revealed repeated messages like:</p>
+                <pre tabindex="0"><code>SSH adopt failed ip[X.X.X.X], msg[unreachable]</code></pre>
+                <p>The logged adoption attempts lined up closely with Suricata's SSH timestamps, and the application logs identified my managed switch model. I also verified that the switch was currently adopted, online, and working normally.</p>
+            </section>
+            <section aria-labelledby="what-it-turned-out-to-be">
+                <h2 id="what-it-turned-out-to-be">What It Turned Out to Be</h2>
+                <p><strong>UniFi controller adoption attempts</strong>, not an unknown host scanning the network. The exact reason the controller retried that old/default address wasn't established, but the origin of the traffic was clear.</p>
+            </section>
+            <section aria-labelledby="why-it-mattered">
+                <h2 id="why-it-mattered">Why It Mattered</h2>
+                <p>A scan signature can describe legitimate management behavior. Correlating a network alert with application logs gave me a much stronger explanation than the alert name alone.</p>
+            </section>
+        </article>
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+    </main>
+</body>
+</html>
