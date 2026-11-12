@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>The SMB Connection to My Old University - Quick Bits - Colton H.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <nav aria-label="Main navigation">
+        <details class="mobile-nav">
+            <summary><span aria-hidden="true">☰</span> Menu</summary>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/projects/">Projects</a>
+                <a href="/articles/">Articles</a>
+                <a href="/quick-bits/">Quick Bits</a>
+                <a href="/papers/">Papers</a>
+                <a href="/contact/">Contact</a>
+                <a href="/aifree/">AI Free</a>
+            </div>
+        </details>
+        <div class="desktop-nav nav-links">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/projects/">Projects</a>
+            <a href="/articles/">Articles</a>
+            <a href="/quick-bits/">Quick Bits</a>
+            <a href="/papers/">Papers</a>
+            <a href="/contact/">Contact</a>
+            <a href="/aifree/">AI Free</a>
+        </div>
+    </nav>
+
+    <main class="article-page quick-bit-page">
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+        <article>
+            <header class="article-header">
+                <p class="paper-card__category">Security / Endpoint Investigation</p>
+                <h1>The SMB Connection to My Old University</h1>
+                <p class="paper-card__meta"><span>Status: Investigating</span><span>October 22–31, 2026</span></p>
+            </header>
+
+            <section aria-labelledby="what-i-saw">
+                <h2 id="what-i-saw">What I Saw</h2>
+                <p>My connection-monitoring dashboard showed a Windows workstation repeatedly trying <strong>TCP 445 (SMB)</strong> toward an unfamiliar public address. That's not a connection I expect a gaming laptop to make to the internet, so I investigated rather than dismissing it.</p>
+            </section>
+            <section aria-labelledby="investigation">
+                <h2 id="investigation">Investigation</h2>
+                <p>I inspected archived Suricata flows and found repeated attempts on different days involving <strong>TCP 445, TCP 80, and UDP 443</strong> toward the same remote endpoint. The captured flows showed outbound packets, <strong>zero return packets observed</strong>, and timeouts. That didn't establish that any SMB session or authentication succeeded.</p>
+                <p>A network ownership lookup associated the destination with a university I had attended. The address suddenly looked familiar. I remembered using that university's network, confirmed the old Wi-Fi profile was saved, and found a Credential Manager target matching the <strong>exact destination</strong>. Checks for current SMB mappings and obvious persistent Explorer network locations came back empty.</p>
+            </section>
+            <section aria-labelledby="what-it-turned-out-to-be">
+                <h2 id="what-it-turned-out-to-be">What It Turned Out to Be</h2>
+                <p><strong>A known historical destination, but not a fully explained connection.</strong> The saved credential strongly linked the computer to that remote address; it did <strong>not</strong> prove which program initiated the recent requests.</p>
+            </section>
+            <section aria-labelledby="why-it-mattered">
+                <h2 id="why-it-mattered">Why It Mattered</h2>
+                <p>The suspicious-looking connection became much less mysterious once I correlated network logs with old endpoint configuration. I still wouldn't mark its initiating process as identified without endpoint evidence.</p>
+            </section>
+        </article>
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+    </main>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>When My Router Dashboard Triggered Suricata - Quick Bits - Colton H.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <nav aria-label="Main navigation">
+        <details class="mobile-nav">
+            <summary><span aria-hidden="true">☰</span> Menu</summary>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/projects/">Projects</a>
+                <a href="/articles/">Articles</a>
+                <a href="/quick-bits/">Quick Bits</a>
+                <a href="/papers/">Papers</a>
+                <a href="/contact/">Contact</a>
+                <a href="/aifree/">AI Free</a>
+            </div>
+        </details>
+        <div class="desktop-nav nav-links">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/projects/">Projects</a>
+            <a href="/articles/">Articles</a>
+            <a href="/quick-bits/">Quick Bits</a>
+            <a href="/papers/">Papers</a>
+            <a href="/contact/">Contact</a>
+            <a href="/aifree/">AI Free</a>
+        </div>
+    </nav>
+
+    <main class="article-page quick-bit-page">
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+        <article>
+            <header class="article-header">
+                <p class="paper-card__category">Security / Troubleshooting</p>
+                <h1>When My Router Dashboard Triggered Suricata</h1>
+                <p class="paper-card__meta"><span>Status: Benign</span><span>October 2026</span></p>
+            </header>
+
+            <section aria-labelledby="what-i-saw">
+                <h2 id="what-i-saw">What I Saw</h2>
+                <p>Suricata kept generating <code>SURICATA HTTP Request unrecognized authorization method (SID 2221034, Priority 3)</code> alerts for traffic from my Windows workstation to my router's web interface. An authentication-related alert aimed at the router deserved a closer look.</p>
+            </section>
+            <section aria-labelledby="investigation">
+                <h2 id="investigation">Investigation</h2>
+                <p>I checked the HTTP request context with the IDS logs and packet capture. The requests used a Firefox User-Agent and targeted router administration API paths. I had the router's management page open in Firefox.</p>
+                <p>I closed that tab and the alerts stopped. Opening it again produced another burst of roughly two dozen alerts; closing it stopped them again.</p>
+            </section>
+            <section aria-labelledby="what-it-turned-out-to-be">
+                <h2 id="what-it-turned-out-to-be">What It Turned Out to Be</h2>
+                <p><strong>Normal router administration traffic matching Suricata's HTTP parser rule.</strong> The repeated open/close test tied the alerts to the management tab rather than an unknown process or attacker.</p>
+            </section>
+            <section aria-labelledby="why-it-mattered">
+                <h2 id="why-it-mattered">Why It Mattered</h2>
+                <p>This was a useful little controlled experiment. Instead of guessing from the rule name, I changed one thing—whether the admin page was open—and watched the alert behavior follow it.</p>
+            </section>
+        </article>
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+    </main>
+</body>
+</html>
