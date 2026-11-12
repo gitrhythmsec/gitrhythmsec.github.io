@@ -9,8 +9,40 @@
 
 }
 
+h2 {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
 #nav1 {
 	position: absolute;
 	left: 15%;
 	width: 200px;
 }
+
+/*.nh { /* nav header */ /* yeah this is part of the "arrow list" garbage. Revisiting.
+    margin: 0;
+    padding: 0;
+}*/
+
+table, td, th, tr {
+    border: solid;
+    border-collapse: collapse;
+    border-color: purple;
+    padding: 20px;
+    text-align: center;
+}
+
+ul {
+    list-style: none;
+    padding-left: 0px;
+}
+
+li {
+    padding-left: 0px;
+}
+
+/*li::before { Use this for making the list to arrows eventually
+    content: ">";
+    padding-right: 8px;
+} */

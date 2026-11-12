@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>BasicAPI</title>
+        <link rel="stylesheet" href="./style.css">
+    </head>
+    <body>
+        <div class="body">
+            <div id="nav1">
+                <a href="./index.html">Go back</a>
+            </div>
+            <div class="content">
+                <h1>What is BasicAPI?</h1>
+                <p>BasicAPI is a how I am teaching myself API development, methods, and security. I am also using it as a chance to practice and develop my Python skills.</p><br>
+                <p>The current status is pretty simple, it has a few endpoints that simply return a string, change that string, or greet you (or whoever you shoutout). Below is a list of all of the endpoints, their methods, and their functions.</p>
+                <center><table> <!-- please please please keep them in alphabetical order by method, like in the code. Also lmao about the center tags. -->
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Arguments:type</th>
+                        <th>Function</th>
+                    </tr>
+                    <tr>
+                        <td>DELETE</td>
+                        <td>/remove</td>
+                        <td>None</td>
+                        <td>Deletes whatever is stored in static_str</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td>/get-greeting</td>
+                        <td>name:str</td>
+                        <td>Greets whatever you put in "name"</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td>/get-message</td>
+                        <td>None</td>
+                        <td>Returns, "Hello world! This is my first API!"</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td>/get-string</td>
+                        <td>None</td>
+                        <td>Returns whatever is stored in static_str</td>
+                    </tr>
+                    <tr>
+                        <td>POST</td>
+                        <td>/add</td>
+                        <td>text:str</td>
+                        <td>Appends whatever you put in "text" to static_str</td>
+                    </tr>
+                    <tr>
+                        <td>PUT</td>
+                        <td>/change</td>
+                        <td>text:str</td>
+                        <td>Replaces static_str with whatever you put in "text"</td>
+                    </tr>
+                </table></center>
+                <h1>Security</h1>
+                <p>As a cybersecurity enthusiast, degree holder, and self-proclaimed researcher, I am testing the API to find ways to break it. So far, FastAPI's built in security seems to be doing very well! See my testing/development notes <a href="./BasicAPIDevNotes.txt" target="_blank">here ^</a></p>
+                <br>
+                <h1>Template</h1>
+                <p>I made a very simple template to get a basic API (lol) up and running quickly. It contains the six endpoints and the command to start it. This bare-metal template can be reused and deployed quickly!</p>
+                <br><br><br><br><p>You can find everything about the project <a href="https://github.com/gitrhythmsec/BasicAPI" target="_blank">on github</a>! ^</p>
+            </div>
+        </div>
+    </body>
+</html>
+
+

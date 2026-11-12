@@ -1,0 +1,67 @@
+I am following the tutorial at:
+https://blog.postman.com/how-to-build-an-api-in-python/
+
+I have added the /add, /change, and /remove endpoints and am currently testing them. Update: they don't work :)
+
+Ok ok ok ok ok I figured it out, when I use the browser, it is only using GET and not PUT, POST, DELETE etc. Now I need something to test those other methods. Write my own thing in python? The tutorial uses something, i lowk might just start there.
+https://stackoverflow.com/questions/66622020/fastapi-detailmethod-not-allowed
+
+I am downloading postman now to test the API. It looks like a pretty big tool, maybe it would be good to get experience with this.
+
+Holy cow this tool is great! You can name requests and reorder them, as in the screenshot. Now I can test by just clicking on the endpoint, typing in the value, then sending!
+
+I see that the JSON error reveals a query name in /get-greeting when no arguments are passed as seen below. I need to research if that is a security issue or not. The server shows a "422 Unprocessable Entity" error in the logs.
+
+detail	0	
+	loc	
+	0	"query"
+	1	"name"
+	msg	"field required"
+	type	"value_error.missing"
+
+Adding spaces, massive URLs, or extra queries to the URL doesn't seem to cause any issues at all!
+
+
+references
+https://stackoverflow.com/questions/16869024/what-is-pycache
+
+
+Interesting find, using POST: {192.168.8.3:1337/add?text=""} makes the string: "\"\"". The response is:
+{
+    "Message": "Text added",
+    "current_str": "\"\""
+}
+
+So if I use /add with 192.168.8.3:1337/add?text="import pty; pty.spawn(\"/bin/bash\")" it returns:
+{
+    "Message": "Text added",
+    "current_str": "\"import pty; pty.spawn(\\\"/bin/bash\\\")\""
+}
+
+192.168.8.3:1337/add?text=import uuid; print(uuid.uuid4().hex) returns:
+{
+    "Message": "Text added",
+    "current_str": "\"import uuid; print(uuid.uuid4().hex)"
+}
+
+192.168.8.3:1337/add?text="1=1" and import uuid; print(uuid.uuid4().hex) returns:
+{
+    "Message": "Text added",
+    "current_str": "\"1=1\" and import uuid; print(uuid.uuid4().hex)"
+}
+
+192.168.8.3:1337/add?text="junk", "uuid":import uuid; print(uuid.uuid4().hex);
+{
+    "Message": "Text added",
+    "current_str": "\"junk\", \"uuid\":import uuid; print(uuid.uuid4().hex);"
+}
+
+192.168.8.3:1337/get-string
+{
+    "Message": "Static_str is currently: \"junk\", \"uuid\":import uuid; print(uuid.uuid4().hex);"
+}
+
+It looks like FastAPI is able to handle characters in the query such as ". I would hope it does!
+
+
+uvicorn main:app --reload --host 0.0.0.0 --port 1337
