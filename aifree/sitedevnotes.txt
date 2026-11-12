@@ -1,0 +1,12 @@
+Ok so I'm making this file to dump notes as a keep writing the pages. It's just a dump, not going to be too pretty or anything.
+
+Firefox in all its lovelyness absolutely refuses to update CSS changes. I've fought it and worked around it a lot. I finally tried a private window, and it doesn't cache the pages anymore. Now I don't need Edge or my iPad to test design changes lol 
+
+I wish you could have ">" as a ul bullet point. Oh well, guess I'll go for nothing then. Ok so that W3 link has it but it looks like:
+>
+BasicAPI
+...
+>
+Site Stuff
+I've spent way too much time on this detail, I'll revisit it later.
+
