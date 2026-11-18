@@ -63,5 +63,7 @@ So if I use /add with 192.168.8.3:1337/add?text="import pty; pty.spawn(\"/bin/ba
 
 It looks like FastAPI is able to handle characters in the query such as ". I would hope it does!
 
+It is so funny, I'm just starting the "Web requests" module in my HTB Academy training lol
+
 
 uvicorn main:app --reload --host 0.0.0.0 --port 1337
