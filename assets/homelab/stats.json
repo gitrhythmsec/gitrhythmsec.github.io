@@ -1,4 +1,7 @@
 {
-    "packets": 23756010,
-    "drops": 0
+    "packets": 23932638,
+    "drops": 0,
+    "loss": 0.0,
+    "status": "     Active: active (running) since Sat 2026-11-14 14:19:51 MST; 5 days ago\n",
+    "date": "Thu Nov 19 11:37:54 PM UTC 2026\n"
 }
