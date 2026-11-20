@@ -6,7 +6,7 @@ I have the command I already use to get the data manually, I can probably reuse 
 Let me get that running, then I'll work on handling the output. I will try and dump everything in and pray it works. Ok so I saw the issue and added the escape characters. It needs to be run as sudo or else it asks for the password lol
 I need to figure out how to isolate the number into a variable. All this stackoverflow stuff is a rabbit-hole lmao. I'm guess and checking the solutions they offer.
 https://unix.stackexchange.com/questions/238180/execute-shell-commands-in-python
-https://askubuntu.com/questions/592028/remove-all-text-before-last-space-in-text-file-from-cli 
+https://askubuntu.com/questions/592028/remove-all-text-before-last-space-in-text-file-from-cli
 https://stackoverflow.com/questions/2960772/how-do-i-put-a-variable-s-value-inside-a-string-interpolate-it-into-the-string
 https://stackoverflow.com/questions/4760215/running-shell-command-and-capturing-the-output
 
