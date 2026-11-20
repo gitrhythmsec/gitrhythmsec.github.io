@@ -549,3 +549,11 @@ main pre:focus-visible,
     color: #5b6472;
     font-size: 0.9rem;
 }
+
+.homelab-stats dt {
+    min-height: 6em;
+}
+
+.homelab-stats dd {
+    margin: 0;
+}
