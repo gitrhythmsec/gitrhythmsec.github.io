@@ -17,6 +17,7 @@
                 <a href="/">Home</a>
                 <a href="/about/">About</a>
                 <a href="/projects/">Projects</a>
+                <a href="/homelab/">Homelab</a>
                 <a href="/articles/">Articles</a>
                 <a href="/quick-bits/">Quick Bits</a>
                 <a href="/papers/">Papers</a>
@@ -28,6 +29,7 @@
             <a href="/">Home</a>
             <a href="/about/">About</a>
             <a href="/projects/">Projects</a>
+            <a href="/homelab/">Homelab</a>
             <a href="/articles/">Articles</a>
             <a href="/quick-bits/">Quick Bits</a>
             <a href="/papers/">Papers</a>
@@ -44,20 +46,20 @@
         </header>
 
         <section aria-labelledby="entries-heading">
-            <h2 id="entries-heading">Investigation Notes</h2>
+            <h2 id="entries-heading">Bits</h2>
             <div class="paper-grid">
-                <a class="paper-card" href="/quick-bits/steam-priority-one-alert/">
-                    <p class="paper-card__category">Security / IDS</p>
-                    <h3 class="paper-card__title">Steam Set Off My IDS</h3>
-                    <p class="paper-card__meta">Status: Benign</p>
-                    <p class="paper-card__summary">Steam started in the background and triggered an unexpected Priority 1 Suricata rule. I traced the alert to its HTTP User-Agent and turned the surprise into a dashboard test.</p>
+                <a class="paper-card" href="/quick-bits/router-login-cleartext-password-alert/">
+                    <p class="paper-card__category">Security / Networking / Investigation</p>
+                    <h3 class="paper-card__title">My Router Login Triggered a P1 Alert</h3>
+                    <p class="paper-card__meta">Status: Investigating</p>
+                    <p class="paper-card__summary">A Suricata alert flagged <code>pwd=</code> in a cleartext HTTP body just after I logged into my router. I traced it to the login form and verified that HTTPS stopped the alert while HTTP triggered it again. Enforcing and validating secure access is next.</p>
                     <span class="paper-card__action">Read Quick Bit <span aria-hidden="true">→</span></span>
                 </a>
-                <a class="paper-card" href="/quick-bits/nmap-exposed-git-and-weird-http/">
-                    <p class="paper-card__category">Security / Reconnaissance</p>
-                    <h3 class="paper-card__title">Nmap Found My <code>.git</code> Directory</h3>
-                    <p class="paper-card__meta">Status: Informational</p>
-                    <p class="paper-card__summary">A routine scan produced some alarming-looking Python HTTP logs—and discovered that my website preview was serving Git metadata.</p>
+                <a class="paper-card" href="/quick-bits/suricata-capture-ring-zero-drops/">
+                    <p class="paper-card__category">Security / Linux / Troubleshooting</p>
+                    <h3 class="paper-card__title">16.2 Million Packets, Zero Drops</h3>
+                    <p class="paper-card__meta">Status: Resolved</p>
+                    <p class="paper-card__summary">My Suricata IDS was dropping packets, so I tuned its AF_PACKET capture ring and checked the kernel counters. At the time of writing, it had processed 16.2 million packets with zero reported drops during the observed period.</p>
                     <span class="paper-card__action">Read Quick Bit <span aria-hidden="true">→</span></span>
                 </a>
                 <a class="paper-card" href="/quick-bits/why-the-ids-missed-an-nmap-scan/">
@@ -74,11 +76,18 @@
                     <p class="paper-card__summary">Suricata flagged unexpected outbound SSH traffic. Containerized UniFi logs matched the timestamps and revealed a failed switch-adoption attempt.</p>
                     <span class="paper-card__action">Read Quick Bit <span aria-hidden="true">→</span></span>
                 </a>
-                <a class="paper-card" href="/quick-bits/the-smb-connection-to-my-old-university/">
-                    <p class="paper-card__category">Security / Endpoint Investigation</p>
-                    <h3 class="paper-card__title">An SMB Connection from My College Days</h3>
-                    <p class="paper-card__meta">Status: Investigating</p>
-                    <p class="paper-card__summary">An unexpected outbound SMB attempt led me through archived flows, IP ownership, old Wi-Fi profiles, and a matching saved credential—without proving the initiating process.</p>
+                <a class="paper-card" href="/quick-bits/nmap-exposed-git-and-weird-http/">
+                    <p class="paper-card__category">Security / Reconnaissance</p>
+                    <h3 class="paper-card__title">Nmap Found My <code>.git</code> Directory</h3>
+                    <p class="paper-card__meta">Status: Informational</p>
+                    <p class="paper-card__summary">A routine scan produced some alarming-looking Python HTTP logs—and discovered that my website preview was serving Git metadata.</p>
+                    <span class="paper-card__action">Read Quick Bit <span aria-hidden="true">→</span></span>
+                </a>
+                <a class="paper-card" href="/quick-bits/steam-priority-one-alert/">
+                    <p class="paper-card__category">Security / IDS</p>
+                    <h3 class="paper-card__title">Steam Set Off My IDS</h3>
+                    <p class="paper-card__meta">Status: Benign</p>
+                    <p class="paper-card__summary">Steam started in the background and triggered an unexpected Priority 1 Suricata rule. I traced the alert to its HTTP User-Agent and turned the surprise into a dashboard test.</p>
                     <span class="paper-card__action">Read Quick Bit <span aria-hidden="true">→</span></span>
                 </a>
                 <a class="paper-card" href="/quick-bits/router-dashboard-triggered-http-alerts/">
@@ -86,6 +95,13 @@
                     <h3 class="paper-card__title">My Router Admin Tab Looked Suspicious</h3>
                     <p class="paper-card__meta">Status: Benign</p>
                     <p class="paper-card__summary">An HTTP authorization alert turned out to follow my router's Firefox admin tab. Closing and reopening it made the alerts stop and return.</p>
+                    <span class="paper-card__action">Read Quick Bit <span aria-hidden="true">→</span></span>
+                </a>
+                <a class="paper-card" href="/quick-bits/the-smb-connection-to-my-old-university/">
+                    <p class="paper-card__category">Security / Endpoint Investigation</p>
+                    <h3 class="paper-card__title">An SMB Connection from My College Days</h3>
+                    <p class="paper-card__meta">Status: Investigating</p>
+                    <p class="paper-card__summary">An unexpected outbound SMB attempt led me through archived flows, IP ownership, old Wi-Fi profiles, and a matching saved credential—without proving the initiating process.</p>
                     <span class="paper-card__action">Read Quick Bit <span aria-hidden="true">→</span></span>
                 </a>
             </div>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Fixing Suricata Packet Drops with AF_PACKET Ring Tuning - Quick Bits - Colton H.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <nav aria-label="Main navigation">
+        <details class="mobile-nav">
+            <summary><span aria-hidden="true">☰</span> Menu</summary>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/projects/">Projects</a>
+                <a href="/homelab/">Homelab</a>
+                <a href="/articles/">Articles</a>
+                <a href="/quick-bits/">Quick Bits</a>
+                <a href="/papers/">Papers</a>
+                <a href="/contact/">Contact</a>
+                <a href="/aifree/">AI Free</a>
+            </div>
+        </details>
+        <div class="desktop-nav nav-links">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/projects/">Projects</a>
+            <a href="/homelab/">Homelab</a>
+            <a href="/articles/">Articles</a>
+            <a href="/quick-bits/">Quick Bits</a>
+            <a href="/papers/">Papers</a>
+            <a href="/contact/">Contact</a>
+            <a href="/aifree/">AI Free</a>
+        </div>
+    </nav>
+
+    <main class="article-page quick-bit-page">
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+        <article>
+            <header class="article-header">
+                <p class="paper-card__category">Security / Linux / Troubleshooting</p>
+                <h1>Fixing Suricata Packet Drops with AF_PACKET Ring Tuning</h1>
+                <p class="paper-card__meta"><span>Status: Resolved</span><span>November 2026</span></p>
+            </header>
+
+            <section aria-labelledby="what-i-saw">
+                <h2 id="what-i-saw">What I Saw</h2>
+                <p>My Suricata IDS was running on a dedicated Debian sensor connected to a mirrored switch port. I was generating and investigating alerts, but its capture statistics showed a serious problem: the sensor was dropping packets. That's not something I want from an IDS, especially if I'm using its alerts to decide whether something happened on my network.</p>
+            </section>
+            <section aria-labelledby="investigation">
+                <h2 id="investigation">Investigation</h2>
+                <p>I worked through the capture problem and adjusted Suricata's <code>AF_PACKET</code> ring configuration. Rather than judging the fix by whether WatcherDash looked busy, I checked the actual capture counters in Suricata's statistics log.</p>
+                <p>I used commands like:</p>
+                <pre tabindex="0"><code>sudo tail -n 200 /var/log/suricata/stats.log | \
+  grep -E 'capture.kernel_packets|capture.kernel_drops' | tail</code></pre>
+                <p>Before tuning, the sensor had reported substantial kernel packet loss. At some points, nearly one in three packets was being dropped. After the change, I watched the counters while the IDS continued monitoring normal network traffic. At one checkpoint, Suricata had processed more than <strong>12 million packets over roughly three days</strong>, and the reported kernel-drop counter remained at <strong>zero</strong>. At the time of writing, the counter had reached <strong>16.2 million packets</strong>, still with <strong>zero reported kernel drops</strong>.</p>
+            </section>
+            <section aria-labelledby="what-it-turned-out-to-be">
+                <h2 id="what-it-turned-out-to-be">What It Turned Out to Be</h2>
+                <p>The capture-ring tuning resolved the packet-drop problem in the monitoring period I measured. Suricata continued processing millions of packets without reporting additional kernel drops.</p>
+                <p>I can't say exactly which earlier events were missed because of packet loss. In particular, I later observed a router-login alert that I hadn't seen since starting Suricata, but I don't have evidence directly proving that the ring size was the reason.</p>
+            </section>
+            <section aria-labelledby="why-it-mattered">
+                <h2 id="why-it-mattered">Why It Mattered</h2>
+                <p>A dashboard can be full of alerts while the sensor behind it is still missing traffic. This was a good lesson to validate the capture pipeline itself, not just the detection rules. The statistic I cared about wasn't how many alerts appeared; it was whether Suricata was keeping up with the packets delivered to it.</p>
+            </section>
+        </article>
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+    </main>
+</body>
+</html>
