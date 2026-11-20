@@ -469,7 +469,7 @@ main pre:focus-visible,
     margin-top: 0;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 860px) {
     nav .mobile-nav {
         display: block;
     }
@@ -495,4 +495,57 @@ main pre:focus-visible,
     .contact-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* High-level Homelab overview and future sanitized telemetry. */
+.homelab-page {
+    color: #182230;
+    overflow-wrap: break-word;
+}
+
+.homelab-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+    gap: 16px;
+    margin: 20px 0;
+    padding: 0;
+    list-style: none;
+}
+
+.homelab-stats > * {
+    padding: 16px;
+    border: 1px solid #e1e5eb;
+    border-radius: 8px;
+    background: #f3f5f8;
+}
+
+.homelab-overview,
+.homelab-stats dt {
+    font-weight: 700;
+}
+
+.homelab-stats dd {
+    margin: 8px 0 0;
+    color: #5b6472;
+}
+
+.homelab-map {
+    margin: 20px 0;
+    padding: 20px;
+    border: 1px solid #e1e5eb;
+    border-radius: 8px;
+}
+
+.homelab-map img {
+    display: block;
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    margin-inline: auto;
+}
+
+.homelab-map figcaption {
+    margin-top: 16px;
+    color: #5b6472;
+    font-size: 0.9rem;
 }

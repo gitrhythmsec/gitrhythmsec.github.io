@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>A Router Login Triggered a Cleartext Password Alert - Quick Bits - Colton H.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <nav aria-label="Main navigation">
+        <details class="mobile-nav">
+            <summary><span aria-hidden="true">☰</span> Menu</summary>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about/">About</a>
+                <a href="/projects/">Projects</a>
+                <a href="/homelab/">Homelab</a>
+                <a href="/articles/">Articles</a>
+                <a href="/quick-bits/">Quick Bits</a>
+                <a href="/papers/">Papers</a>
+                <a href="/contact/">Contact</a>
+                <a href="/aifree/">AI Free</a>
+            </div>
+        </details>
+        <div class="desktop-nav nav-links">
+            <a href="/">Home</a>
+            <a href="/about/">About</a>
+            <a href="/projects/">Projects</a>
+            <a href="/homelab/">Homelab</a>
+            <a href="/articles/">Articles</a>
+            <a href="/quick-bits/">Quick Bits</a>
+            <a href="/papers/">Papers</a>
+            <a href="/contact/">Contact</a>
+            <a href="/aifree/">AI Free</a>
+        </div>
+    </nav>
+
+    <main class="article-page quick-bit-page">
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+        <article>
+            <header class="article-header">
+                <p class="paper-card__category">Security / Networking / Investigation</p>
+                <h1>A Router Login Triggered a Cleartext Password Alert</h1>
+                <p class="paper-card__meta"><span>Status: Investigating</span><span>November 17–18, 2026</span></p>
+            </header>
+
+            <section aria-labelledby="what-i-saw">
+                <h2 id="what-i-saw">What I Saw</h2>
+                <p>I logged into my GL-iNet router's admin panel and immediately noticed a <strong>Priority 1</strong> alert pinned in red on WatcherDash. The signature was <code>ET INFO Http Client Body contains pwd= in cleartext (SID 2012888)</code>. Since I'd just entered an admin password, the timing was hard to ignore.</p>
+            </section>
+            <section aria-labelledby="investigation">
+                <h2 id="investigation">Investigation</h2>
+                <p>I inspected the alert instead of assuming that Priority 1 meant an intrusion. WatcherDash showed traffic from my Windows workstation to the router, with several occurrences of the same signature.</p>
+                <p>I opened Firefox Developer Tools and examined the network request made by the login form. It was an HTTP POST with a form field named <code>pwd</code>, and Developer Tools displayed the submitted value in readable text. I hadn't deliberately chosen an insecure connection: entering the router's IP address in my browser took me to the <strong><code>http://</code></strong> admin page rather than HTTPS. That meant the original login request did not have HTTPS transport encryption.</p>
+                <p>I repeated the login using a <strong>dummy password</strong>, which let me confirm the form's behavior without exposing my real credentials in screenshots. I also opened the admin page using <strong><code>https://</code></strong>. Firefox still displayed the form value in Developer Tools, but that's expected: the browser can inspect its own request <em>before</em> TLS encrypts it.</p>
+                <p>I then compared the IDS behavior directly. <strong>Logging in over HTTPS produced no matching Suricata alert</strong>, while switching back to HTTP caused SID <code>2012888</code> to fire immediately. This was a useful practical check that the alert depended on Suricata being able to inspect the unencrypted request body. It did not, by itself, establish that HTTPS was being enforced or replace packet-level verification.</p>
+            </section>
+            <section aria-labelledby="what-it-turned-out-to-be">
+                <h2 id="what-it-turned-out-to-be">What It Turned Out to Be</h2>
+                <p>The alert matched the router administration workflow: a <code>pwd=</code> form field was sent in a cleartext HTTP request body during a login attempt. That explains the Suricata detection without implying that an attacker was present.</p>
+                <p>The HTTP-versus-HTTPS test showed that the alert stopped when I used HTTPS and returned immediately over HTTP. That is consistent with the request body being protected by TLS on the HTTPS connection, but it isn't yet the same as verifying enforcement. At the time of writing, I still plan to review the router's HTTPS/security settings and confirm with a packet capture that login credentials are no longer readable on the wire or accepted over plain HTTP.</p>
+            </section>
+            <section aria-labelledby="why-it-mattered">
+                <h2 id="why-it-mattered">Why It Mattered</h2>
+                <p>This is the kind of alert I built my IDS to notice. I correlated a detection with something I had just done, found the corresponding request in the browser, reproduced the behavior safely, and compared alerting over HTTP and HTTPS. It also highlighted an important distinction: <strong>plaintext in Developer Tools is not the same thing as plaintext on the network when HTTPS is enabled</strong>. The remaining job is to validate the secure configuration, not just assume the warning is gone.</p>
+            </section>
+        </article>
+        <p><a href="/quick-bits/">Back to Quick Bits</a></p>
+    </main>
+</body>
+</html>
