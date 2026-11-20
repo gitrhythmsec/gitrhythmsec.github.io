@@ -1,0 +1,81 @@
+Ok so I am going to write a script that aggregates the Suricata statistics, puts them into JSON, sends Mr. Jason to GitHub, then some JS something will somehow display it on the page.
+
+We have the hello world functional! Let's pull the Packets and Drops out of Suricata next and print them.
+
+I have the command I already use to get the data manually, I can probably reuse that. It looks like "sudo tail -n 200 /var/log/suricata/stats.log | grep -E 'capture.kernel_packets|capture.kernel_drops' | tail -n 2".
+Let me get that running, then I'll work on handling the output. I will try and dump everything in and pray it works. Ok so I saw the issue and added the escape characters. It needs to be run as sudo or else it asks for the password lol
+I need to figure out how to isolate the number into a variable. All this stackoverflow stuff is a rabbit-hole lmao. I'm guess and checking the solutions they offer.
+https://unix.stackexchange.com/questions/238180/execute-shell-commands-in-python
+https://askubuntu.com/questions/592028/remove-all-text-before-last-space-in-text-file-from-cli 
+https://stackoverflow.com/questions/2960772/how-do-i-put-a-variable-s-value-inside-a-string-interpolate-it-into-the-string
+https://stackoverflow.com/questions/4760215/running-shell-command-and-capturing-the-output
+
+
+Alright, I am able to get the number isolated. I'll get the JSON data ready in a table, then write it to a file. Ok so that worked but there is a \n at the end of packets, and it saves as a str not an int. Fixing hopefully.
+Yup the simple fix worked. I added the if statement to catch dumps not having a value, and found a way to detect nonzero integers. Next is getting the bot to push the data to GitHub!
+https://www.geeksforgeeks.org/python/reading-and-writing-json-to-a-file-in-python/
+https://stackoverflow.com/questions/14113187/how-do-you-set-a-conditional-in-python-based-on-datatypes
+
+
+I'm going to just use the OS to push the file to GitHub, I think that'll work. Hahaha nope! It throws a "not a git repo" error, even though I specified the file. Looking for a fix.
+SO has one where you add -C <path> <command>. I couldn't for the life of me read it right, it took 10 mins of errors, but when I finally did it like the reply said, it worked, kinda.
+Now the error is in resolving the hostname :):) It turns out that it was file permissions, the script should not run as sudo and some of the .git data was "root root". Resetting the permissions clean worked.
+https://stackoverflow.com/questions/13479763/how-to-push-a-single-file-in-a-subdirectory-to-github-not-master
+https://stackoverflow.com/questions/22691575/run-git-commit-from-another-directory
+https://superuser.com/questions/1325221/linux-how-to-recursively-chmod-a-folder
+
+
+Next I will automate the script with cron. Hopefully it works.
+# send data to website every two hours, fingers crossed.
+0 */2 * * * /usr/bin/python3 /home/USER/code/python/sendstats.py
+https://stackoverflow.com/questions/8727935/execute-python-script-via-crontab
+https://adminschoice.com/crontab-quick-reference/
+
+
+Ok so it didn't work, I think it was more of that sudo garbage. Looking at suricata log permissions, I see r-- at the end. They have root ownership but everyone can read the files. Fine for now.
+I will remove the 'sudo' from the script then. It works in manual testing! I'll check back on the GitHub page later!
+
+
+All I need now is to go into the homelab page and figure out how to load the data into the HTML file and I'm golden!
+Good God, Codex put in <dd> tags and I have no idea what those do. I'm probably just going to nuke those or something. Also, to note, Codex wrote the initial homelab page, it is not inside the AI Free Zone, and I am not claiming that whole page to be AI free. I'm just implementing the data feed.
+It looks like I need a JS loader, and I have no JS experience. Ts makes no sense lol.
+I'm stealing one from W3. It 404s, I had to pull down the latest file. Then it was undefined, I changed response.packets to data.packets and everything worked!
+I want to make a note here, I am proud of myself with this one. I have ZERO experience, professional or hobby, with JSON and JS. Using websites, logic, and rereading the tutorial carefully, I solved this issue.
+I am proud to honestly say I solved this issue on my own, I did not use any AI tools to give me the answer.
+https://www.w3schools.com/js/js_json_html.asp
+https://stackoverflow.com/questions/18637418/trying-to-load-local-json-file-to-show-data-in-a-html-page-using-jquery
+https://www.htmldog.com/references/html/tags/dd/
+https://stackoverflow.com/questions/37121301/how-to-check-if-the-response-of-a-fetch-is-a-json-object-in-javascript
+https://www.w3schools.com/jsref/api_fetch.asp
+
+
+Now it's just adding the next parameters into the data aggregation script! Loss percentage, sensor uptime, and last updated! Back to the script!
+Loss percentage should be a simple division issue. Not jinxing it lmao.
+Sensor uptime looks right and checks for errors.
+Date is easy! "date -u"
+Ok, everything is up in the JSON file! Time to add it to the HTML/JS!
+Beautiful, it was literally just a huge copy-paste plug and chug! It looks wonderful, I'm so excited!
+
+
+Ok so there is a check-in/out issue with GitHub, so I added a line to pull down the repo, modify the file, then push it back out. We'll see if the scheduled task works now. Good night!
+
+Yup, Git handling is a bit janky, but it has pushed an update every two hours now for quite a while! I'll call this one good for now.
+
+
+References:
+https://unix.stackexchange.com/questions/238180/execute-shell-commands-in-python
+https://askubuntu.com/questions/592028/remove-all-text-before-last-space-in-text-file-from-cli
+https://stackoverflow.com/questions/2960772/how-do-i-put-a-variable-s-value-inside-a-string-interpolate-it-into-the-string
+https://stackoverflow.com/questions/4760215/running-shell-command-and-capturing-the-output
+https://www.geeksforgeeks.org/python/reading-and-writing-json-to-a-file-in-python/
+https://stackoverflow.com/questions/14113187/how-do-you-set-a-conditional-in-python-based-on-datatypes
+https://stackoverflow.com/questions/13479763/how-to-push-a-single-file-in-a-subdirectory-to-github-not-master
+https://stackoverflow.com/questions/22691575/run-git-commit-from-another-directory
+https://superuser.com/questions/1325221/linux-how-to-recursively-chmod-a-folder
+https://stackoverflow.com/questions/8727935/execute-python-script-via-crontab
+https://adminschoice.com/crontab-quick-reference/
+https://www.w3schools.com/js/js_json_html.asp
+https://stackoverflow.com/questions/18637418/trying-to-load-local-json-file-to-show-data-in-a-html-page-using-jquery
+https://www.htmldog.com/references/html/tags/dd/
+https://stackoverflow.com/questions/37121301/how-to-check-if-the-response-of-a-fetch-is-a-json-object-in-javascript
+https://www.w3schools.com/jsref/api_fetch.asp

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Implementing Telemetry</title>
+        <link rel="stylesheet" href="./style.css">
+    </head>
+    <body>
+        <div class="body">
+            <div id="nav1">
+                <!--<h2>This is the nav bar</h2>-->
+                <a href="./index.html">Go home</a>
+            </div>
+            <div class="content">
+                <h1>Implementing Lab Environment Telemetry</h1>
+                <h2>About</h2>
+                <p>If you haven't seen it yet, I am building out live telemetry that pushes lab data to the GitHub site. My first implementation is in the <a href="/homelab" target="_blank">homelab ^</a> tab. Currently it has 5 statics about the Suricata IDS Sensor to demonstrate scripting with Python, using GitHub machine accounts, and to show that my Suricata research is successful.</p><br>
+                <h2>How it works</h2>
+                <p>I wrote a Python script that runs locally on my IDS. It collects data, writes it to a JSON file, and pushes that JSON file up to the GitHub repo using a machine account. The script is scheduled to run every two hours using cron. Once it is on GitHub, the homelab page has JavaScript that loads the JSON file and pulls the data out. That data is assigned to elements by ID.</p><br>
+                <h2>Development</h2>
+                <p>So this was a fun one for sure. I am comfortable with Python, Bash, and Linux environments, but I have absolutely NO experience with JavaScript or JSON files. Luckily, JSON isn't too complex at this level, and W3 has a pretty good JSON reading example in Javascript. The script was rather straightforward, but I ran into a few challenges with the JS side. Namely, I had to step away, go shower (lol), and come back to read the code in the example to find why the file wasn't loading. The logic made sense, but it wasn't working. I didn't realize I was calling something that wasn't the file name. Seemed like such a simple mistake.</p><br>
+                <p>If you want to see the development notes, click <a href="./telemetryNotes.txt" target="_blank">here! ^</a></p>
+            </div>
+        </div>
+    </body>
+</html>
