@@ -62,6 +62,26 @@ Ok so there is a check-in/out issue with GitHub, so I added a line to pull down 
 Yup, Git handling is a bit janky, but it has pushed an update every two hours now for quite a while! I'll call this one good for now.
 
 
+
+============
+11/23
+
+So for the past few days I've been trying to add a feature that tracks the high score. It was a lot of copy paste from the normal data collection script, and the logic wasn't quite working. 
+I finally restarted with a clean file, and now I have a separate script that runs every few seconds to write a separate JSON file with the exact same data, but it checks for a high score.
+If the current number of packets is < the high score, nothing happens, if the number is > the high score, it overwrites the data. That can happen every few seconds.
+I added a few lines to the existing push script so that the highscore will be updated every few hours. If Suricata crashes, the highscore should allegedly be saved in the json file anyway.
+That file updates with the other data, so it won't be an overload or anything. We'll see how well it works! My refs here were just for r/w json with python, that was admittedly a little confusing lol.
+I also just used the git commands from the script to push the HTML update out, and got some pretty sad results like:
+
+git commit =m
+gitpull
+git pull -ff-only
+
+https://stackoverflow.com/questions/20199126/reading-json-from-a-file
+https://www.geeksforgeeks.org/python/read-json-file-using-python/
+
+
+
 References:
 https://unix.stackexchange.com/questions/238180/execute-shell-commands-in-python
 https://askubuntu.com/questions/592028/remove-all-text-before-last-space-in-text-file-from-cli
@@ -79,3 +99,5 @@ https://stackoverflow.com/questions/18637418/trying-to-load-local-json-file-to-s
 https://www.htmldog.com/references/html/tags/dd/
 https://stackoverflow.com/questions/37121301/how-to-check-if-the-response-of-a-fetch-is-a-json-object-in-javascript
 https://www.w3schools.com/jsref/api_fetch.asp
+https://stackoverflow.com/questions/20199126/reading-json-from-a-file
+https://www.geeksforgeeks.org/python/read-json-file-using-python/
