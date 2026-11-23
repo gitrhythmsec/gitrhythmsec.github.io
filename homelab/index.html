@@ -75,6 +75,13 @@
                 <div><dt>Sensor uptime</dt><dd data-metric="sensor_uptime" id="status">Not connected</dd></div>
                 <div><dt>Last updated</dt><dd data-metric="last_updated" id="date">Not connected</dd></div>
             </dl>
+            <dl class="homelab-stats">
+                <div><dt>Packets processed this session</dt><dd data-metric="kernel_packets" id="highpackets">Not connected</dd></div> <!-- JUST ADDING THE ID WORKS, I CAN JUST DROP MY SHIT INTO CODEX'S SHIT-->
+                <div><dt>Reported kernel packet drops</dt><dd data-metric="kernel_drops" id="highdrops">Not connected</dd></div>
+                <div><dt>Capture-loss percentage</dt><dd data-metric="capture_loss_percent" id="highloss">Not connected</dd></div>
+                <div><dt>Sensor uptime</dt><dd data-metric="sensor_uptime" id="highstatus">Not connected</dd></div>
+                <div><dt>Last updated</dt><dd data-metric="last_updated" id="highdate">Not connected</dd></div>
+            </dl>
         </section>
 
         <!-- Ok I'm putting my own thing in here. This is yucky. I'm stealing it from here: https://www.w3schools.com/js/js_json_html.asp
@@ -108,6 +115,37 @@
 
             loadData();
          </script>
+
+         <!-- Adding another section for the high scores. Doing this one on my own, hope it works!-->
+         <script>
+            async function loadRecord() {
+                try {
+                    const response = await fetch("/assets/homelab/highscore.json"); // Got lucky with the comment syntax btw lol. This loads the file maybe?
+
+                    if (!response.ok) {
+                        throw new Error("HTTP error " + response.status); // Error handling ig? I think this is what threw the 404 at first.
+                    }
+
+                    const data = await response.json(); // get data from the file?
+
+                    document.getElementById("highpackets").textContent = "Total packets: " + data.packets;
+                    document.getElementById("highdrops").textContent = "Total drops: " + data.drops; 
+                    document.getElementById("highloss").textContent = "Percent loss: " + data.loss + "%";
+                    document.getElementById("highstatus").textContent = "Uptime: " + data.status;
+                    document.getElementById("highdate").textContent = "Updated: " + data.date;
+                }
+                catch(err) {
+                    document.getElementById("highpackets").textContent = err.message; // oooh does this maybe display an error message if it doesn't work
+                    document.getElementById("highdrops").textContent = err.message; // like where the text should be?
+                    document.getElementById("highloss").textContent = err.message;
+                    document.getElementById("highstatus").textContent = err.message;
+                    document.getElementById("highdate").textContent = err.message;
+                }
+            }
+
+            loadRecord();
+         </script>
+
 
          <!-- end of my own thing-->
 
